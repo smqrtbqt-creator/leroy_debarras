@@ -1,0 +1,18 @@
+# Exemple de vhost — remplacer server_name et root
+
+server {
+    listen 443 ssl http2;
+    server_name www.leroy-debarras.fr;
+    root /var/www/LEROY_DEBARRAS;
+    index index.html;
+
+    add_header X-Content-Type-Options nosniff always;
+    add_header Referrer-Policy strict-origin-when-cross-origin always;
+    add_header X-Frame-Options SAMEORIGIN always;
+
+    error_page 404 /404.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}

@@ -1,0 +1,222 @@
+/* Leroy Débarras — navigation, données entreprise, formulaire */
+(function () {
+  "use strict";
+
+  var site = window.LeroySite || {};
+  var helpers = window.LeroySiteHelpers || {};
+
+  function filled(value) {
+    if (helpers.filled) return helpers.filled(value);
+    return !!(value && String(value).trim());
+  }
+
+  function text(value, fallback) {
+    return filled(value) ? String(value).trim() : fallback;
+  }
+
+  document.querySelectorAll("[data-site]").forEach(function (el) {
+    var key = el.getAttribute("data-site");
+    var fallback = el.getAttribute("data-empty") || "À renseigner";
+    el.textContent = text(site[key], fallback);
+  });
+
+  document.querySelectorAll("[data-require]").forEach(function (el) {
+    var key = el.getAttribute("data-require");
+    if (!filled(site[key])) el.hidden = true;
+  });
+
+  document.querySelectorAll("[data-phone-link]").forEach(function (el) {
+    if (filled(site.PHONE)) {
+      var digits = String(site.PHONE).replace(/[^\d+]/g, "");
+      el.setAttribute("href", "tel:" + digits);
+      el.removeAttribute("hidden");
+      el.removeAttribute("aria-hidden");
+      el.removeAttribute("tabindex");
+      var label = text(site.PHONE_DISPLAY || site.PHONE, "Appeler");
+      if (el.getAttribute("data-phone-link") === "label") {
+        el.textContent = "Appeler " + label;
+      }
+    } else {
+      el.setAttribute("hidden", "");
+      el.setAttribute("aria-hidden", "true");
+      el.setAttribute("tabindex", "-1");
+    }
+  });
+
+  document.querySelectorAll("[data-email-link]").forEach(function (el) {
+    if (filled(site.EMAIL)) {
+      el.setAttribute("href", "mailto:" + String(site.EMAIL).trim());
+      el.removeAttribute("hidden");
+      if (el.getAttribute("data-email-link") === "label") {
+        el.textContent = String(site.EMAIL).trim();
+      }
+    } else {
+      el.setAttribute("hidden", "");
+    }
+  });
+
+  var toggle = document.getElementById("menu-toggle");
+  var nav = document.getElementById("site-nav");
+
+  function setOpen(open) {
+    if (!toggle || !nav) return;
+    nav.classList.toggle("open", open);
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    toggle.setAttribute("aria-label", open ? "Fermer le menu" : "Ouvrir le menu");
+  }
+
+  if (toggle && nav) {
+    toggle.addEventListener("click", function () {
+      setOpen(!nav.classList.contains("open"));
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") setOpen(false);
+    });
+    nav.querySelectorAll("a").forEach(function (link) {
+      link.addEventListener("click", function () {
+        setOpen(false);
+      });
+    });
+  }
+
+  var year = document.getElementById("year");
+  if (year) year.textContent = String(new Date().getFullYear());
+
+  var started = document.querySelector("#devis-form [name='startedAt']");
+  if (started) started.value = String(Date.now());
+
+  var form = document.getElementById("devis-form");
+  var status = document.getElementById("form-status");
+
+  function setStatus(state, message) {
+    if (!status) return;
+    status.hidden = false;
+    status.dataset.state = state;
+    status.textContent = message;
+  }
+
+  function showError(id, message) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = message || "";
+  }
+
+  if (form && status) {
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      ["err-name", "err-phone", "err-email", "err-commune", "err-desc"].forEach(function (id) {
+        showError(id, "");
+      });
+
+      var hp = form.querySelector("[name='website']");
+      if (hp && String(hp.value || "").trim()) {
+        setStatus("success", "Votre demande a bien été enregistrée.");
+        form.reset();
+        return;
+      }
+
+      var data = new FormData(form);
+      var name = String(data.get("name") || "").trim();
+      var phone = String(data.get("phone") || "").trim();
+      var email = String(data.get("email") || "").trim();
+      var commune = String(data.get("commune") || "").trim();
+      var desc = String(data.get("description") || "").trim();
+      var ok = true;
+
+      if (name.length < 2) {
+        showError("err-name", "Indiquez votre nom.");
+        ok = false;
+      }
+      if (phone.replace(/\D/g, "").length < 8) {
+        showError("err-phone", "Indiquez un numéro de téléphone valide.");
+        ok = false;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showError("err-email", "Indiquez une adresse e-mail valide.");
+        ok = false;
+      }
+      if (commune.length < 2) {
+        showError("err-commune", "Indiquez la commune d’intervention.");
+        ok = false;
+      }
+      if (desc.length < 10) {
+        showError("err-desc", "Décrivez brièvement le besoin (au moins 10 caractères).");
+        ok = false;
+      }
+
+      if (!ok) {
+        setStatus("error", "Merci de corriger les champs indiqués.");
+        var firstErr = form.querySelector(".field-error:not(:empty)");
+        var field = firstErr && firstErr.previousElementSibling;
+        if (field && typeof field.focus === "function") field.focus();
+        return;
+      }
+
+      setStatus("sending", "Envoi en cours…");
+
+      var payload = {
+        name: name,
+        phone: phone,
+        email: email,
+        commune: commune,
+        service: String(data.get("service") || ""),
+        housing: String(data.get("housing") || ""),
+        volume: String(data.get("volume") || ""),
+        access: String(data.get("access") || ""),
+        description: desc,
+        startedAt: String(data.get("startedAt") || ""),
+        source: "leroy-debarras-site"
+      };
+
+      var endpoint = filled(site.FORM_ENDPOINT) ? String(site.FORM_ENDPOINT).trim() : "";
+
+      if (endpoint) {
+        fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify(payload)
+        })
+          .then(function (res) {
+            if (!res.ok) throw new Error("http");
+            setStatus("success", "Merci. Votre demande de devis a bien été envoyée. Nous vous recontactons rapidement.");
+            form.reset();
+          })
+          .catch(function () {
+            setStatus("error", "L’envoi n’a pas abouti. Réessayez dans un instant ou utilisez le téléphone lorsque le numéro sera indiqué.");
+          });
+        return;
+      }
+
+      if (filled(site.EMAIL)) {
+        var body = [
+          "Nom : " + payload.name,
+          "Téléphone : " + payload.phone,
+          "E-mail : " + payload.email,
+          "Commune : " + payload.commune,
+          "Prestation : " + payload.service,
+          "Logement : " + payload.housing,
+          "Volume : " + payload.volume,
+          "Accès : " + payload.access,
+          "",
+          payload.description
+        ].join("\n");
+        window.location.href =
+          "mailto:" +
+          encodeURIComponent(String(site.EMAIL).trim()) +
+          "?subject=" +
+          encodeURIComponent("Demande de devis — Leroy Débarras") +
+          "&body=" +
+          encodeURIComponent(body);
+        setStatus(
+          "success",
+          "Votre logiciel de messagerie devrait s’ouvrir avec le message préparé. S’il ne s’ouvre pas, copiez votre texte et envoyez-le à l’adresse indiquée."
+        );
+        return;
+      }
+
+      setStatus(
+        "error",
+        "Le formulaire est prêt mais pas encore relié à une messagerie. Les coordonnées de contact seront affichées dès qu’elles seront communiquées."
+      );
+    });
+  }
+})();
