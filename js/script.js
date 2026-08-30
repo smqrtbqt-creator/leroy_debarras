@@ -1,4 +1,4 @@
-/* Leroy Débarras — navigation, données entreprise, formulaire */
+/* Leroy du Débarras — navigation, données entreprise, formulaire */
 (function () {
   "use strict";
 
@@ -203,7 +203,7 @@
           "mailto:" +
           encodeURIComponent(String(site.EMAIL).trim()) +
           "?subject=" +
-          encodeURIComponent("Demande de devis — Leroy Débarras") +
+          encodeURIComponent("Demande de devis — Leroy du Débarras") +
           "&body=" +
           encodeURIComponent(body);
         setStatus(

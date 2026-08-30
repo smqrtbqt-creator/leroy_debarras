@@ -1,5 +1,5 @@
 /**
- * Contrôles SEO / contenu du site Leroy Débarras.
+ * Contrôles SEO / contenu du site Leroy du Débarras.
  * Usage : node tests/check-site.mjs
  */
 import fs from "fs";
@@ -59,12 +59,12 @@ if (forbidden.test(sm)) fail("sitemap agence-ia-web");
 
 const cfg = fs.readFileSync(path.join(root, "js", "site-config.js"), "utf8");
 if (!cfg.includes("SITE_URL")) fail("config SITE_URL");
-["PHONE: null", "EMAIL: null", "ADDRESS: null"].forEach((k) => {
-  if (!cfg.includes(k)) fail(`config attend ${k}`);
-});
+if (!cfg.includes("EMAIL: null")) fail("config attend EMAIL: null");
+if (!cfg.includes("PHONE:")) fail("config PHONE");
+if (!cfg.includes("ADDRESS:")) fail("config ADDRESS");
 
 const index = fs.readFileSync(path.join(root, "index.html"), "utf8");
-if (!index.includes("Débarras de maison et nettoyage extérieur à Marcillac-la-Croisille")) {
+if (!index.includes("Débarras, nettoyage et évacuation à Marcillac-la-Croisille")) {
   fail("H1 accueil");
 }
 if (!index.includes("application/ld+json")) fail("JSON-LD accueil");

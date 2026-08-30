@@ -12,6 +12,10 @@ server {
 
     error_page 404 /404.html;
 
+    location = /elagage.html {
+        return 301 /nettoyage-exterieur.html;
+    }
+
     location / {
         try_files $uri $uri/ =404;
     }

@@ -17,8 +17,8 @@ Fichiers locaux dans `/images/` (JPEG source + WebP). Aucune dépendance CDN en 
 | `cave.jpg` | Cave | https://pixabay.com/photos/architecture-1867187/ |
 | `portail.jpg` | Garage / accès | https://pixabay.com/photos/architecture-1477041/ |
 | `jardin.jpg` | Nettoyage extérieur | https://pixabay.com/photos/gardening-840835/ |
-| `arbre.jpg` | Élagage | https://pixabay.com/photos/road-1072821/ |
+| `arbre.jpg` | Travaux extérieurs | https://pixabay.com/photos/road-1072821/ |
 | `foret.jpg` | Abords / terrain | https://pixabay.com/photos/forest-3147758/ |
 | `allee.jpg` | Zones | https://pixabay.com/photos/avenue-815297/ |
 
-Ces images illustrent des situations (intérieur, jardin, arbres). Elles **ne sont pas** des avant/après de chantiers Leroy Débarras.
+Ces images illustrent des situations (intérieur, jardin, arbres). Elles **ne sont pas** des avant/après de chantiers Leroy du Débarras.

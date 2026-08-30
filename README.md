@@ -1,4 +1,4 @@
-# Leroy Débarras — site vitrine
+# Leroy du Débarras — site vitrine
 
 Site statique indépendant, prêt à être déployé sur son propre domaine.
 Ne dépend pas d’agence-ia-web.com.

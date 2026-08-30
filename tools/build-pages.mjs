@@ -61,7 +61,7 @@ function nav(current) {
   return `<header class="site-header">
     <div class="container header-inner">
       <a class="logo" href="/">
-        <strong>Leroy Débarras</strong>
+        <strong>Leroy du Débarras</strong>
         <span>Marcillac-la-Croisille · Corrèze</span>
       </a>
       <button class="nav-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Ouvrir le menu">
@@ -135,7 +135,7 @@ function ctaBand(title, text) {
       <p class="lede" style="margin:10px 0 18px;max-width:40rem">${esc(text)}</p>
       <div class="actions">
         <a class="btn btn-primary" href="/contact.html">Demander un devis gratuit</a>
-        <a class="btn btn-secondary" href="/contact.html" data-phone-link="label" hidden>Appeler Leroy Débarras</a>
+        <a class="btn btn-secondary" href="/contact.html" data-phone-link="label" hidden>Appeler Leroy du Débarras</a>
       </div>
     </div>
   </section>`;
@@ -145,8 +145,8 @@ function footer() {
   return `<footer class="site-footer">
     <div class="container footer-grid">
       <div>
-        <h2>Leroy Débarras</h2>
-        <p>Débarras de maisons, vide-maison, nettoyage extérieur et élagage autour de Marcillac-la-Croisille, en Corrèze.</p>
+        <h2>Leroy du Débarras</h2>
+        <p>Débarras, nettoyage, tri et évacuation autour de Marcillac-la-Croisille, en Corrèze.</p>
         <p data-require="PHONE"><a data-phone-link="label" href="/contact.html">Téléphone</a></p>
         <p data-require="EMAIL"><a data-email-link="label" href="/contact.html">E-mail</a></p>
         <p data-require="ADDRESS"><span data-site="ADDRESS"></span> <span data-site="POSTAL_CODE" data-empty=""></span> <span data-site="CITY"></span></p>
@@ -154,12 +154,12 @@ function footer() {
       <div>
         <h2>Prestations</h2>
         <ul>
-          <li><a href="/debarras-maison.html">Débarras de maison</a></li>
-          <li><a href="/debarras-appartement.html">Débarras d’appartement</a></li>
-          <li><a href="/debarras-succession.html">Débarras après succession</a></li>
-          <li><a href="/caves-greniers-garages.html">Caves, greniers et garages</a></li>
-          <li><a href="/nettoyage-exterieur.html">Nettoyage extérieur</a></li>
-          <li><a href="/elagage.html">Élagage</a></li>
+          <li><a href="/debarras-maison.html">Débarras de maisons et logements</a></li>
+          <li><a href="/nettoyage-fin-chantier.html">Nettoyage après chantier</a></li>
+          <li><a href="/nettoyage-exterieur.html">Travaux extérieurs</a></li>
+          <li><a href="/tri-et-recuperation.html">Tri et récupération</a></li>
+          <li><a href="/evacuation.html">Évacuation</a></li>
+          <li><a href="/caves-greniers-garages.html">Grange, hangar, garage, cave</a></li>
         </ul>
       </div>
       <div>
@@ -175,7 +175,7 @@ function footer() {
       </div>
     </div>
     <div class="container legal">
-      <p>© <span id="year"></span> Leroy Débarras — Marcillac-la-Croisille, Corrèze.</p>
+      <p>© <span id="year"></span> Leroy du Débarras — Marcillac-la-Croisille, Corrèze.</p>
     </div>
   </footer>
   <div class="sticky-cta" aria-label="Actions rapides">
@@ -201,7 +201,7 @@ function layout({ title, desc, path, current, noindex, jsonld, extraHead, body }
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="fr_FR">
-  <meta property="og:site_name" content="Leroy Débarras">
+  <meta property="og:site_name" content="Leroy du Débarras">
   <meta property="og:title" content="${esc(title)}">
   <meta property="og:description" content="${esc(desc)}">
   <meta property="og:url" content="${canonical}">
@@ -243,7 +243,7 @@ function layout({ title, desc, path, current, noindex, jsonld, extraHead, body }
 const businessNode = {
   "@type": "LocalBusiness",
   "@id": abs("/#business"),
-  name: "Leroy Débarras",
+  name: site.BUSINESS_NAME || "Leroy du Débarras",
   url: abs("/"),
   image: abs("/images/og-social.jpg"),
   areaServed: [
@@ -251,6 +251,31 @@ const businessNode = {
     { "@type": "AdministrativeArea", name: "Corrèze" },
   ],
 };
+if (site.YEAR_FOUNDED) businessNode.foundingDate = String(site.YEAR_FOUNDED);
+if (site.OWNER_NAME) {
+  businessNode.founder = { "@type": "Person", name: String(site.OWNER_NAME) };
+}
+if (site.SIRET) {
+  businessNode.taxID = String(site.SIRET).replace(/\s/g, "");
+}
+if (site.PHONE) {
+  const digits = String(site.PHONE).replace(/[^\d]/g, "");
+  businessNode.telephone = digits.startsWith("0")
+    ? "+33" + digits.slice(1)
+    : digits.startsWith("33")
+      ? "+" + digits
+      : digits;
+}
+if (site.ADDRESS || site.POSTAL_CODE || site.CITY) {
+  businessNode.address = {
+    "@type": "PostalAddress",
+    streetAddress: site.ADDRESS || undefined,
+    postalCode: site.POSTAL_CODE || undefined,
+    addressLocality: site.CITY || "Marcillac-la-Croisille",
+    addressRegion: site.REGION || "Corrèze",
+    addressCountry: "FR",
+  };
+}
 
 function serviceNode(name, url, desc) {
   return {
@@ -265,12 +290,16 @@ function serviceNode(name, url, desc) {
 
 const faqHome = [
   {
+    q: "Faut-il vider toute la maison ?",
+    a: "Non. Pas besoin de vider toute votre maison. Leroy du Débarras peut intervenir pour une maison entière, une grange, un hangar, un jardin, une pièce, une cave, un garage, ou seulement quelques encombrants. Chaque intervention est adaptée au volume à évacuer et à l’état des lieux.",
+  },
+  {
     q: "Combien coûte un débarras ?",
     a: "Le tarif dépend du volume, de l’accès, du type de biens et des prestations demandées (tri, évacuation, nettoyage). Un devis est établi après échange sur votre situation, sans grille de prix unique.",
   },
   {
     q: "Comment obtenir un devis ?",
-    a: "Décrivez le logement, les pièces concernées et l’accès via le formulaire. Des photos aident à estimer le volume. Nous revenons vers vous pour préciser l’intervention.",
+    a: "Décrivez les lieux, les pièces concernées et l’accès via le formulaire. Des photos aident à estimer le volume. Nous revenons vers vous pour préciser l’intervention.",
   },
   {
     q: "Dans quelles communes intervenez-vous ?",
@@ -318,14 +347,29 @@ const faqCaves = [
 const faqExt = [
   {
     q: "Intervenez-vous pour les jardins ?",
-    a: "Oui, pour le débroussaillage, le nettoyage de terrain, l’évacuation des végétaux et des encombrants extérieurs, ainsi que la remise en ordre après un débarras.",
+    a: "Oui, pour le débroussaillage, la tonte, le nettoyage de gouttières, le nettoyage de terrain, l’évacuation des végétaux et des encombrants extérieurs, ainsi que la remise en ordre après un débarras.",
+  },
+  {
+    q: "Intervenez-vous sur les arbres ?",
+    a: "Oui, pour l’abattage de petits arbres et le débitage d’arbres tombés. Les limites (hauteur, accès, type d’arbre) sont confirmées au cas par cas. Aucune certification n’est affichée tant qu’elle n’est pas fournie par l’entreprise.",
+  },
+  {
+    q: "Faites-vous le nettoyage de gouttières ?",
+    a: "Oui. Le nettoyage de gouttières peut être demandé seul ou avec un débarras, un nettoyage de maison ou des travaux extérieurs. L’accès (hauteur, toit) se précise au devis.",
   },
 ];
 
-const faqElagage = [
+const faqChantier = [
   {
-    q: "Proposez-vous l’élagage ?",
-    a: "Oui, pour un entretien ponctuel des arbres et l’évacuation des branches. Les limites d’intervention (hauteur, accès, type d’arbre) sont confirmées au cas par cas. Aucune certification n’est affichée ici tant qu’elle n’est pas fournie par l’entreprise.",
+    q: "Intervenez-vous après des travaux ?",
+    a: "Oui. Après un chantier, Leroy du Débarras peut assurer le nettoyage de fin de chantier, le tri, le chargement et l’évacuation des matériaux, cartons, déchets et encombrants restants.",
+  },
+];
+
+const faqTri = [
+  {
+    q: "Triez-vous les métaux et les déchets ?",
+    a: "Oui. Le tri porte notamment sur les déchets, la ferraille, l’inox et le cuivre, avec séparation des matériaux et évacuation vers les filières adaptées, selon ce qui est présent sur place.",
   },
 ];
 
@@ -334,8 +378,8 @@ const pages = [];
 pages.push({
   file: "index.html",
   html: layout({
-    title: "Débarras et nettoyage extérieur à Marcillac-la-Croisille | Leroy Débarras",
-    desc: "Débarras de maison, vide-maison, nettoyage extérieur et élagage à Marcillac-la-Croisille et en Corrèze. Devis gratuit, intervention locale.",
+    title: "Débarras, nettoyage et évacuation à Marcillac-la-Croisille | Leroy du Débarras",
+    desc: "Leroy du Débarras remet en état vos espaces, évacue ce qui vous encombre et débarrasse déchets et objets inutiles à Marcillac-la-Croisille et en Corrèze. Devis gratuit.",
     path: "/",
     current: "/",
     extraHead: `<link rel="preload" as="image" href="/images/hero.webp" type="image/webp">`,
@@ -345,7 +389,7 @@ pages.push({
         "@type": "WebSite",
         "@id": abs("/#website"),
         url: abs("/"),
-        name: "Leroy Débarras",
+        name: "Leroy du Débarras",
         publisher: { "@id": abs("/#business") },
         inLanguage: "fr-FR",
       },
@@ -370,8 +414,8 @@ pages.push({
       <div class="hero-overlay"></div>
       <div class="container hero-content">
         <p class="hero-kicker">Marcillac-la-Croisille · Corrèze · Secteur alentours</p>
-        <h1>Débarras de maison et nettoyage extérieur à Marcillac-la-Croisille</h1>
-        <p class="lede">Leroy Débarras intervient pour vider un logement, trier et évacuer les encombrants, puis remettre en état l’intérieur ou le terrain lorsque c’est demandé.</p>
+        <h1>Débarras, nettoyage et évacuation à Marcillac-la-Croisille</h1>
+        <p class="lede">Leroy du Débarras intervient pour remettre en état vos espaces, évacuer ce qui vous encombre et vous débarrasser des déchets et objets dont vous n’avez plus besoin.</p>
         <div class="actions">
           <a class="btn btn-primary" href="/contact.html">Demander un devis gratuit</a>
           <a class="btn btn-secondary" href="/services.html">Voir nos services</a>
@@ -380,45 +424,45 @@ pages.push({
     </section>
     <section>
       <div class="container">
-        <h2 class="section-title">Un débarras simple, du premier contact au nettoyage final</h2>
-        <p class="section-intro">Pas de parcours compliqué : vous expliquez la situation, nous évaluons le travail, puis nous avançons dans l’ordre, jusqu’à l’évacuation et le nettoyage si besoin.</p>
+        <h2 class="section-title">Une intervention adaptée à votre besoin</h2>
+        <p class="section-intro">Pas besoin de vider toute votre maison. Vous expliquez la situation, nous évaluons le volume, puis nous avançons jusqu’à l’évacuation et le nettoyage si besoin.</p>
         <div class="steps">
-          <article class="step"><span class="step-num">1</span><h3>Vous nous expliquez votre besoin</h3><p>Maison, appartement, cave, jardin : décrivez ce qui doit partir et les contraintes d’accès.</p></article>
-          <article class="step"><span class="step-num">2</span><h3>Nous évaluons le travail</h3><p>Volume, accès, tri, évacuation et éventuel nettoyage : le devis suit cette évaluation.</p></article>
-          <article class="step"><span class="step-num">3</span><h3>Nous trions et débarrassons</h3><p>Les pièces sont vidées selon ce qui a été convenu, sans emporter ce qui doit rester.</p></article>
-          <article class="step"><span class="step-num">4</span><h3>Nous évacuons</h3><p>Meubles, cartons, encombrants et déchets verts sont emmenés hors du logement ou du terrain.</p></article>
-          <article class="step"><span class="step-num">5</span><h3>Nous nettoyons si nécessaire</h3><p>Un passage de nettoyage intérieur ou extérieur peut clôturer l’intervention.</p></article>
+          <article class="step"><span class="step-num">1</span><h3>Vous décrivez les lieux</h3><p>Maison, appartement, grange, hangar, jardin, pièce, cave, garage ou quelques encombrants seulement.</p></article>
+          <article class="step"><span class="step-num">2</span><h3>Nous évaluons le volume</h3><p>Chaque chantier est adapté au volume à évacuer et à l’état des lieux.</p></article>
+          <article class="step"><span class="step-num">3</span><h3>Nous trions et débarrassons</h3><p>Ferraille, inox, cuivre, déchets : les matériaux sont séparés lorsque c’est possible.</p></article>
+          <article class="step"><span class="step-num">4</span><h3>Nous chargeons et évacuons</h3><p>Chargement, transport, remorquage si besoin, puis évacuation vers la déchetterie ou les filières adaptées.</p></article>
+          <article class="step"><span class="step-num">5</span><h3>Nous nettoyons si nécessaire</h3><p>Remise en ordre des lieux, y compris après un chantier ou un débarras.</p></article>
         </div>
       </div>
     </section>
     <section>
       <div class="container">
-        <h2 class="section-title">Prestations</h2>
-        <p class="section-intro">Chaque carte mène vers une page détaillée. Le devis reste le point d’entrée, sans tarif standard affiché.</p>
+        <h2 class="section-title">Nos services</h2>
+        <p class="section-intro">Débarras, nettoyage, travaux extérieurs, tri et évacuation. Le devis reste le point d’entrée, sans tarif standard affiché.</p>
         <div class="cards cards-3">
           <article class="card">
             ${pic({ webp: "/images/salon-encombre.webp", jpg: "/images/salon-encombre.jpg", alt: "Pièce encombrée à débarrasser dans une maison", w: 1280, h: 847 })}
-            <div class="card-body"><h3>Débarras maison</h3><p>Maisons complètes ou partielles, meubles, électroménager et pièces annexes.</p><a class="more" href="/debarras-maison.html">Débarras de maison</a></div>
+            <div class="card-body"><h3>Maisons et logements</h3><p>Maison, appartement, grange, hangar, garage, une seule pièce, après déménagement, encombrants.</p><a class="more" href="/debarras-maison.html">Débarras de maisons</a></div>
           </article>
           <article class="card">
-            ${pic({ webp: "/images/meubles.webp", jpg: "/images/meubles.jpg", alt: "Meubles et objets à trier pour un vide-maison", w: 1280, h: 768 })}
-            <div class="card-body"><h3>Vide-maison</h3><p>Tri, enlèvement et évacuation des meubles et objets dont vous n’avez plus l’usage.</p><a class="more" href="/debarras-maison.html">Voir le vide-maison</a></div>
+            ${pic({ webp: "/images/piece.webp", jpg: "/images/piece.jpg", alt: "Pièce à remettre en ordre après un débarras", w: 1280, h: 720 })}
+            <div class="card-body"><h3>Nettoyage de locaux</h3><p>Grange, maison, pièces fortement encombrées, remise en ordre et fin de chantier.</p><a class="more" href="/nettoyage-fin-chantier.html">Nettoyage et chantier</a></div>
           </article>
           <article class="card">
-            ${pic({ webp: "/images/maison-ext.webp", jpg: "/images/maison-ext.jpg", alt: "Maison à préparer après une succession", w: 1280, h: 853 })}
-            <div class="card-body"><h3>Débarras après succession</h3><p>Intervention adaptée aux logements à vider après un décès, avec respect des lieux.</p><a class="more" href="/debarras-succession.html">Page succession</a></div>
+            ${pic({ webp: "/images/portail.webp", jpg: "/images/portail.jpg", alt: "Accès à une propriété, chargement et évacuation", w: 1280, h: 720 })}
+            <div class="card-body"><h3>Après chantier</h3><p>Matériaux, cartons, déchets et encombrants restants : tri, chargement et évacuation.</p><a class="more" href="/nettoyage-fin-chantier.html">Fin de chantier</a></div>
           </article>
           <article class="card">
-            ${pic({ webp: "/images/cave.webp", jpg: "/images/cave.jpg", alt: "Volume intérieur bas de type cave ou dépendance", w: 1280, h: 873 })}
-            <div class="card-body"><h3>Caves, greniers et garages</h3><p>Évacuation des encombrants et remise en ordre des espaces difficiles d’accès.</p><a class="more" href="/caves-greniers-garages.html">Caves et annexes</a></div>
+            ${pic({ webp: "/images/jardin.webp", jpg: "/images/jardin.jpg", alt: "Jardin à remettre en état", w: 1280, h: 853 })}
+            <div class="card-body"><h3>Travaux extérieurs</h3><p>Débroussaillage, tonte, gouttières, végétaux, petits arbres, terrains et jardins.</p><a class="more" href="/nettoyage-exterieur.html">Travaux extérieurs</a></div>
           </article>
           <article class="card">
-            ${pic({ webp: "/images/jardin.webp", jpg: "/images/jardin.jpg", alt: "Jardin à remettre en état après débroussaillage", w: 1280, h: 853 })}
-            <div class="card-body"><h3>Nettoyage extérieur</h3><p>Débroussaillage, nettoyage de terrain et évacuation des végétaux.</p><a class="more" href="/nettoyage-exterieur.html">Nettoyage extérieur</a></div>
+            ${pic({ webp: "/images/meubles.webp", jpg: "/images/meubles.jpg", alt: "Objets et matériaux à trier avant évacuation", w: 1280, h: 768 })}
+            <div class="card-body"><h3>Tri et récupération</h3><p>Déchets, ferraille, inox, cuivre : séparation des matériaux et filières adaptées.</p><a class="more" href="/tri-et-recuperation.html">Tri et récupération</a></div>
           </article>
           <article class="card">
-            ${pic({ webp: "/images/arbre.webp", jpg: "/images/arbre.jpg", alt: "Arbres en bord de chemin, entretien et élagage", w: 1280, h: 853 })}
-            <div class="card-body"><h3>Élagage</h3><p>Taille et entretien ponctuel des arbres, avec évacuation des branches.</p><a class="more" href="/elagage.html">Élagage</a></div>
+            ${pic({ webp: "/images/maison-2.webp", jpg: "/images/maison-2.jpg", alt: "Maison et accès, chargement pour évacuation", w: 1280, h: 853 })}
+            <div class="card-body"><h3>Évacuation</h3><p>Chargement, transport, remorquage, déchetterie, déchets verts, ferraille.</p><a class="more" href="/evacuation.html">Évacuation</a></div>
           </article>
         </div>
       </div>
@@ -430,9 +474,9 @@ pages.push({
           <li><strong>Intervention locale</strong> Entreprise basée sur le secteur de Marcillac-la-Croisille, habituée aux maisons de Corrèze.</li>
           <li><strong>Devis personnalisé</strong> Chaque chantier est évalué selon le volume et l’accès, sans prix affiché au hasard.</li>
           <li><strong>Contact direct</strong> Une demande claire, un retour humain. Pas de parcours en ligne opaque.</li>
-          <li><strong>Volume adapté</strong> Une pièce, une maison, une cave ou un terrain : l’organisation suit le besoin réel.</li>
-          <li><strong>Respect des lieux</strong> On ne vide pas « à la va-vite » : ce qui doit rester est préservé.</li>
-          <li><strong>Tri et évacuation</strong> Les objets partent du logement ; le nettoyage peut être ajouté.</li>
+          <li><strong>Volume adapté</strong> Maison entière, grange, hangar, jardin, pièce, cave, garage ou quelques encombrants seulement.</li>
+          <li><strong>Respect des lieux</strong> On n’emporte pas « à la va-vite » : ce qui doit rester est préservé.</li>
+          <li><strong>Tri et évacuation</strong> Ferraille, inox, cuivre, déchets verts : les filières suivent ce qui est sur place.</li>
         </ul>
       </div>
     </section>
@@ -453,7 +497,7 @@ pages.push({
       </div>
     </section>
     ${faqBlock(faqHome)}
-    ${ctaBand("Un logement ou un terrain à remettre en ordre ?", "Expliquez la situation : nous vous indiquons si l’intervention est possible et ce qu’il faut prévoir.")}
+    ${ctaBand("Besoin de faire de la place ?", "Vendre un bien, vider une maison, nettoyer une grange, remettre un jardin en état ou évacuer des encombrants : contactez Leroy du Débarras pour discuter de votre besoin.")}
     `,
   }),
 });
@@ -490,26 +534,73 @@ function pageShell({ file, title, desc, path, h1, lede, crumbs, faq, jsonldExtra
 
 pageShell({
   file: "services.html",
-  title: "Prestations de débarras, nettoyage et élagage | Leroy Débarras",
-  desc: "Débarras de maison et d’appartement, succession, caves, nettoyage extérieur et élagage à Marcillac-la-Croisille et en Corrèze.",
+  title: "Prestations de débarras, nettoyage et évacuation | Leroy du Débarras",
+  desc: "Débarras de maisons et logements, nettoyage de locaux, travaux extérieurs, tri, récupération et évacuation à Marcillac-la-Croisille et en Corrèze.",
   path: "/services.html",
-  h1: "Nos prestations",
-  lede: "Du vide-maison au terrain, les interventions se combinant souvent : tri, évacuation, puis nettoyage si vous le demandez.",
+  h1: "Nos services",
+  lede: "Débarras, nettoyage et évacuation : une intervention adaptée au volume, qu’il s’agisse d’une maison entière ou de quelques encombrants.",
   crumbs: [
     { href: "/", label: "Accueil" },
     { href: "/services.html", label: "Services" },
   ],
   bodyInner: `
   <section class="prose">
-    <div class="container cards cards-2">
-      <article class="card"><div class="card-body"><h3>Débarras de maison</h3><p>Maison complète ou partielle, meubles, cartons, électroménager, dépendances.</p><a class="more" href="/debarras-maison.html">Page débarras maison</a></div></article>
-      <article class="card"><div class="card-body"><h3>Débarras d’appartement</h3><p>Logements collectifs, accès par escalier ou ascenseur, volumes plus contraints.</p><a class="more" href="/debarras-appartement.html">Page appartement</a></div></article>
-      <article class="card"><div class="card-body"><h3>Après succession</h3><p>Organisation, tri, enlèvement et préparation du bien avant vente ou location.</p><a class="more" href="/debarras-succession.html">Page succession</a></div></article>
-      <article class="card"><div class="card-body"><h3>Caves, greniers, garages</h3><p>Encombrants, objets lourds, poussière et accès étroits.</p><a class="more" href="/caves-greniers-garages.html">Page annexes</a></div></article>
-      <article class="card"><div class="card-body"><h3>Nettoyage extérieur</h3><p>Débroussaillage, déchets verts, encombrants de jardin, remise en état de terrain.</p><a class="more" href="/nettoyage-exterieur.html">Page extérieur</a></div></article>
-      <article class="card"><div class="card-body"><h3>Élagage</h3><p>Entretien ponctuel des arbres et évacuation des branches.</p><a class="more" href="/elagage.html">Page élagage</a></div></article>
-    </div>
-    <div class="container" style="margin-top:28px">
+    <div class="container">
+      <h2>Débarras de maisons et logements</h2>
+      <ul>
+        <li>Débarras complet de maison</li>
+        <li>Débarras d’appartement</li>
+        <li>Débarras de grange</li>
+        <li>Débarras de hangar</li>
+        <li>Débarras de garage</li>
+        <li>Débarras d’une seule pièce</li>
+        <li>Débarras après déménagement</li>
+        <li>Évacuation d’encombrants</li>
+      </ul>
+      <p><a href="/debarras-maison.html">Maisons</a> · <a href="/debarras-appartement.html">Appartements</a> · <a href="/caves-greniers-garages.html">Grange, hangar, garage, cave</a> · <a href="/debarras-succession.html">Après succession</a></p>
+      <h2>Débarras et nettoyage de locaux</h2>
+      <ul>
+        <li>Nettoyage de grange</li>
+        <li>Nettoyage de maison</li>
+        <li>Nettoyage de pièces fortement encombrées</li>
+        <li>Nettoyage après chantier</li>
+        <li>Nettoyage et remise en ordre des lieux</li>
+        <li>Nettoyage de gouttières</li>
+        <li>Évacuation des matériaux et déchets laissés en fin de chantier</li>
+      </ul>
+      <p><a href="/nettoyage-fin-chantier.html">Nettoyage et fin de chantier</a></p>
+      <h2>Travaux extérieurs</h2>
+      <ul>
+        <li>Débroussaillage</li>
+        <li>Tonte</li>
+        <li>Nettoyage de gouttières</li>
+        <li>Enlèvement de végétaux</li>
+        <li>Évacuation des déchets verts</li>
+        <li>Abattage de petits arbres</li>
+        <li>Débitage d’arbres tombés</li>
+        <li>Nettoyage de terrains et jardins</li>
+      </ul>
+      <p><a href="/nettoyage-exterieur.html">Travaux extérieurs</a></p>
+      <h2>Tri et récupération</h2>
+      <ul>
+        <li>Tri des déchets</li>
+        <li>Tri de la ferraille</li>
+        <li>Tri de l’inox</li>
+        <li>Tri du cuivre</li>
+        <li>Séparation des différents matériaux</li>
+        <li>Évacuation des déchets vers les filières adaptées</li>
+      </ul>
+      <p><a href="/tri-et-recuperation.html">Tri et récupération</a></p>
+      <h2>Évacuation</h2>
+      <ul>
+        <li>Chargement</li>
+        <li>Transport</li>
+        <li>Remorquage</li>
+        <li>Évacuation vers la déchetterie</li>
+        <li>Évacuation des déchets verts</li>
+        <li>Évacuation de ferraille et matériaux</li>
+      </ul>
+      <p><a href="/evacuation.html">Évacuation</a></p>
       <p>Pour savoir si votre commune est dans le secteur, consultez les <a href="/zones-intervention.html">zones d’intervention</a>.</p>
     </div>
   </section>`,
@@ -517,7 +608,7 @@ pageShell({
 
 pageShell({
   file: "debarras-maison.html",
-  title: "Débarras de maison à Marcillac-la-Croisille | Leroy Débarras",
+  title: "Débarras de maison à Marcillac-la-Croisille | Leroy du Débarras",
   desc: "Débarras de maison à Marcillac-la-Croisille : vide complet ou partiel, meubles, cave, grenier, garage, tri et évacuation. Devis gratuit.",
   path: "/debarras-maison.html",
   h1: "Débarras de maison à Marcillac-la-Croisille",
@@ -537,17 +628,21 @@ pageShell({
   <section>
     <div class="container split">
       <div class="prose">
-        <h2>Maison complète ou débarras partiel</h2>
-        <p>Certaines maisons se vident entièrement avant une vente ou une succession. D’autres n’ont besoin que d’une pièce, d’un étage ou des annexes. Dans les deux cas, on part de votre liste : ce qui part, ce qui reste.</p>
-        <h3>Ce qui est généralement concerné</h3>
+        <h2>Maison complète, une pièce, ou seulement des encombrants</h2>
+        <p>Pas besoin de vider toute votre maison. Leroy du Débarras peut intervenir pour une maison entière, une grange, un hangar, un garage, une seule pièce, un débarras après déménagement, ou l’évacuation de quelques encombrants. Chaque intervention est adaptée au volume à évacuer et à l’état des lieux.</p>
+        <h3>Débarras de maisons et logements</h3>
         <ul>
-          <li>Meubles et literie</li>
-          <li>Électroménager</li>
-          <li>Cartons et objets divers</li>
-          <li>Cave, grenier, garage et dépendances</li>
+          <li>Débarras complet de maison</li>
+          <li>Débarras d’appartement</li>
+          <li>Débarras de grange</li>
+          <li>Débarras de hangar</li>
+          <li>Débarras de garage</li>
+          <li>Débarras d’une seule pièce</li>
+          <li>Débarras après déménagement</li>
+          <li>Évacuation d’encombrants</li>
         </ul>
         <p>Les accès difficiles (escalier étroit, cour, chemin) se précisent dès le devis, car ils changent le temps de travail.</p>
-        <p>Le <a href="/debarras-appartement.html">débarras d’appartement</a> suit la même logique, avec des contraintes d’immeuble. Pour une situation successorale, voir le <a href="/debarras-succession.html">débarras après succession</a>.</p>
+        <p>Le <a href="/debarras-appartement.html">débarras d’appartement</a> suit la même logique, avec des contraintes d’immeuble. Grange, hangar, garage et cave : <a href="/caves-greniers-garages.html">page dépendances</a>. Pour une situation successorale, voir le <a href="/debarras-succession.html">débarras après succession</a>.</p>
       </div>
       ${pic({ webp: "/images/salon.webp", jpg: "/images/salon.jpg", alt: "Pièce de maison avec mobilier avant un vide-maison", w: 1280, h: 822 })}
     </div>
@@ -563,7 +658,7 @@ pageShell({
 
 pageShell({
   file: "debarras-appartement.html",
-  title: "Débarras d’appartement en Corrèze | Leroy Débarras",
+  title: "Débarras d’appartement en Corrèze | Leroy du Débarras",
   desc: "Débarras d’appartement en Corrèze : tri, enlèvement des meubles et évacuation, y compris caves d’immeuble. Devis à Marcillac-la-Croisille et alentours.",
   path: "/debarras-appartement.html",
   h1: "Débarras d’appartement",
@@ -593,7 +688,7 @@ pageShell({
 
 pageShell({
   file: "debarras-succession.html",
-  title: "Débarras après succession en Corrèze | Leroy Débarras",
+  title: "Débarras après succession en Corrèze | Leroy du Débarras",
   desc: "Débarras de maison après succession en Corrèze : tri, enlèvement, évacuation et nettoyage pour préparer une vente ou une location. Ton calme, devis clair.",
   path: "/debarras-succession.html",
   h1: "Débarras de maison après succession",
@@ -633,10 +728,10 @@ pageShell({
 
 pageShell({
   file: "caves-greniers-garages.html",
-  title: "Débarras de cave, grenier et garage en Corrèze | Leroy Débarras",
-  desc: "Vider une cave, un grenier ou un garage à Marcillac-la-Croisille : accès, volume, objets lourds et encombrement. Devis Leroy Débarras.",
+  title: "Débarras de cave, grenier et garage en Corrèze | Leroy du Débarras",
+  desc: "Vider une cave, un grenier ou un garage à Marcillac-la-Croisille : accès, volume, objets lourds et encombrement. Devis Leroy du Débarras.",
   path: "/caves-greniers-garages.html",
-  h1: "Caves, greniers et garages",
+  h1: "Caves, granges, hangars et garages",
   lede: "Ces volumes se remplissent pendant des années. Les vider demande du temps, de la méthode, et une lecture honnête de l’accès.",
   crumbs: [
     { href: "/", label: "Accueil" },
@@ -652,14 +747,16 @@ pageShell({
   bodyInner: `
   <section class="prose">
     <div class="container">
+      <h2>Grange et hangar</h2>
+      <p>Une grange ou un hangar se traite comme un volume à part : objets lourds, ferraille, bois, restes de matériel agricole. Le <a href="/tri-et-recuperation.html">tri</a> (ferraille, inox, cuivre) et l’<a href="/evacuation.html">évacuation</a> font souvent l’essentiel du chantier. Un <a href="/nettoyage-fin-chantier.html">nettoyage de grange</a> peut suivre.</p>
       <h2>Cave</h2>
       <p>Humidité, faible hauteur, escalier raide, objets oubliés : une cave se vide rarement « en cinq minutes ». Signalez la largeur des marches, la présence d’électricité et le type de sol. L’évacuation se fait souvent par seaux, cartons ou charges fractionnées.</p>
       ${pic({ webp: "/images/cave.webp", jpg: "/images/cave.jpg", alt: "Espace intérieur bas illustrant une cave à débarrasser", w: 1280, h: 873 })}
       <h2>Grenier</h2>
       <p>Poussière, isolation, trappe étroite, cartons anciens : le grenier demande de la prudence pour ne pas détériorer le logement en descendant les charges. Un <a href="/debarras-maison.html">débarras de maison</a> inclut souvent cet étage.</p>
       ${pic({ webp: "/images/chaises.webp", jpg: "/images/chaises.jpg", alt: "Mobilier entreposé, situation typique d’un grenier encombré", w: 1280, h: 853 })}
-      <h2>Garage et dépendance</h2>
-      <p>Outils, pneus, bois, vélos, restes de bricolage : le garage concentre le lourd et le volumineux. Une dépendance isolée (hangar, appentis) se traite comme un volume extérieur, parfois avec du <a href="/nettoyage-exterieur.html">nettoyage de terrain</a> autour.</p>
+      <h2>Garage</h2>
+      <p>Outils, pneus, bois, vélos, restes de bricolage : le garage concentre le lourd et le volumineux. Une dépendance isolée se traite parfois avec du <a href="/nettoyage-exterieur.html">nettoyage de terrain</a> autour.</p>
       ${pic({ webp: "/images/portail.webp", jpg: "/images/portail.jpg", alt: "Accès à une propriété, garage ou dépendance à vider", w: 1280, h: 720 })}
       <h3>Contraintes à préciser au devis</h3>
       <ul>
@@ -675,11 +772,11 @@ pageShell({
 
 pageShell({
   file: "nettoyage-exterieur.html",
-  title: "Nettoyage extérieur et débroussaillage à Marcillac-la-Croisille | Leroy Débarras",
-  desc: "Nettoyage extérieur, débroussaillage, évacuation des végétaux et remise en état de terrain à Marcillac-la-Croisille. Devis Leroy Débarras.",
+  title: "Nettoyage extérieur et débroussaillage à Marcillac-la-Croisille | Leroy du Débarras",
+  desc: "Nettoyage extérieur, débroussaillage, nettoyage de gouttières et remise en état de terrain à Marcillac-la-Croisille. Devis Leroy du Débarras.",
   path: "/nettoyage-exterieur.html",
   h1: "Nettoyage extérieur et remise en état",
-  lede: "Après un débarras, ou simplement lorsque le terrain a repris le dessus : débroussailler, ramasser, évacuer, rendre le terrain lisible.",
+  lede: "Après un débarras, ou simplement lorsque le terrain a repris le dessus : débroussailler, nettoyer les gouttières, ramasser, évacuer, rendre le terrain lisible.",
   crumbs: [
     { href: "/", label: "Accueil" },
     { href: "/services.html", label: "Services" },
@@ -689,24 +786,29 @@ pageShell({
   jsonldExtra: serviceNode(
     "Nettoyage extérieur et débroussaillage",
     "/nettoyage-exterieur.html",
-    "Débroussaillage, nettoyage de terrain et évacuation des végétaux.",
+    "Débroussaillage, nettoyage de gouttières, nettoyage de terrain et évacuation des végétaux.",
   ),
   bodyInner: `
   <section>
     <div class="container split">
       <div class="prose">
-        <h2>Débroussaillage et terrain</h2>
-        <p>Autour de Marcillac-la-Croisille, les parcelles se ferment vite : ronces, herbes hautes, branchages. Le travail consiste à ouvrir les abords, ramasser, puis évacuer les déchets verts.</p>
-        <h3>Prestations concernées</h3>
+        <h2>Débroussaillage, tonte et terrain</h2>
+        <p>Autour de Marcillac-la-Croisille, les parcelles se ferment vite. Leroy du Débarras intervient pour remettre jardins et terrains en état, nettoyer les gouttières, puis évacuer les déchets verts.</p>
+        <h3>Travaux extérieurs</h3>
         <ul>
           <li>Débroussaillage</li>
-          <li>Nettoyage de terrain</li>
-          <li>Évacuation des végétaux</li>
-          <li>Nettoyage après débarras</li>
-          <li>Remise en ordre des abords</li>
-          <li>Encombrants extérieurs</li>
+          <li>Tonte</li>
+          <li>Nettoyage de gouttières</li>
+          <li>Enlèvement de végétaux</li>
+          <li>Évacuation des déchets verts</li>
+          <li>Abattage de petits arbres</li>
+          <li>Débitage d’arbres tombés</li>
+          <li>Nettoyage de terrains et jardins</li>
         </ul>
-        <p>L’<a href="/elagage.html">élagage</a> complète parfois ce chantier lorsque des branches gênent le passage ou la toiture. Ce n’est pas un service de paysagisme ornemental : l’objectif est la remise en état utile du terrain.</p>
+        <p>L’abattage de petits arbres et le débitage d’arbres tombés se confirment au cas par cas (accès, hauteur). Ce n’est pas un service de paysagisme ornemental : l’objectif est la remise en état utile du terrain.</p>
+        <div class="placeholder-box">
+          <p><strong>À renseigner avant production</strong> (ne pas inventer) : certifications éventuelles, assurances, matériel spécifique, interventions en hauteur. Tant que ces éléments ne sont pas fournis par l’entreprise, ils ne sont pas affichés comme des preuves.</p>
+        </div>
       </div>
       ${pic({ webp: "/images/jardin.webp", jpg: "/images/jardin.jpg", alt: "Travail de jardin et remise en état d’un terrain", w: 1280, h: 853 })}
     </div>
@@ -724,48 +826,122 @@ pageShell({
 });
 
 pageShell({
-  file: "elagage.html",
-  title: "Élagage à Marcillac-la-Croisille et en Corrèze | Leroy Débarras",
-  desc: "Élagage et entretien ponctuel des arbres à Marcillac-la-Croisille, avec évacuation des branches. Devis selon l’accès et le volume.",
-  path: "/elagage.html",
-  h1: "Élagage et entretien des arbres",
-  lede: "Taille ponctuelle, branches gênantes, évacuation des végétaux. Les limites d’intervention se confirment chantier par chantier.",
+  file: "nettoyage-fin-chantier.html",
+  title: "Nettoyage après chantier en Corrèze | Leroy du Débarras",
+  desc: "Nettoyage de fin de chantier, tri, chargement et évacuation des matériaux et déchets à Marcillac-la-Croisille. Devis Leroy du Débarras.",
+  path: "/nettoyage-fin-chantier.html",
+  h1: "Débarras après chantier",
+  lede: "Vous venez de terminer des travaux et il reste des matériaux, cartons, déchets ou encombrants ? Leroy du Débarras peut intervenir pour le nettoyage de fin de chantier, le tri, le chargement et l’évacuation.",
   crumbs: [
     { href: "/", label: "Accueil" },
     { href: "/services.html", label: "Services" },
-    { href: "/elagage.html", label: "Élagage" },
+    { href: "/nettoyage-fin-chantier.html", label: "Fin de chantier" },
   ],
-  faq: faqElagage,
+  faq: faqChantier,
   jsonldExtra: serviceNode(
-    "Élagage",
-    "/elagage.html",
-    "Élagage ponctuel et évacuation des branches en Corrèze.",
+    "Nettoyage après chantier",
+    "/nettoyage-fin-chantier.html",
+    "Nettoyage de fin de chantier, tri, chargement et évacuation des déchets.",
   ),
   bodyInner: `
   <section>
     <div class="container split">
       <div class="prose">
-        <h2>Ce qui est proposé</h2>
-        <p>Leroy Débarras propose un élagage et un entretien ponctuel des arbres, avec évacuation des branches. L’objectif est pratique : dégager une toiture, un chemin, une façade, ou alléger un sujet trop dense, dans la mesure de ce qui peut être fait sur place.</p>
-        <h3>À confirmer avant intervention</h3>
+        <h2>Débarras et nettoyage de locaux</h2>
         <ul>
-          <li>Accès au pied de l’arbre</li>
-          <li>Volume de branches à évacuer</li>
-          <li>Hauteur et difficulté — <strong>à évaluer sur place</strong></li>
+          <li>Nettoyage de grange</li>
+          <li>Nettoyage de maison</li>
+          <li>Nettoyage de pièces fortement encombrées</li>
+          <li>Nettoyage après chantier</li>
+          <li>Nettoyage et remise en ordre des lieux</li>
+          <li>Nettoyage de gouttières</li>
+          <li>Évacuation des matériaux et déchets laissés en fin de chantier</li>
         </ul>
-        <div class="placeholder-box">
-          <p><strong>À renseigner avant production</strong> (ne pas inventer) : certifications éventuelles, assurances, matériel spécifique, interventions en hauteur. Tant que ces éléments ne sont pas fournis par l’entreprise, ils ne sont pas affichés comme des preuves.</p>
-        </div>
-        <p>Le <a href="/nettoyage-exterieur.html">nettoyage extérieur</a> et l’évacuation des déchets verts vont souvent de pair.</p>
+        <p>Le chantier intérieur (débarras) et le <a href="/tri-et-recuperation.html">tri</a> se combinent souvent avec l’<a href="/evacuation.html">évacuation</a> vers la déchetterie ou les filières adaptées.</p>
       </div>
-      ${pic({ webp: "/images/arbre.webp", jpg: "/images/arbre.jpg", alt: "Alignement d’arbres le long d’un chemin, entretien et élagage", w: 1280, h: 853 })}
+      ${pic({ webp: "/images/cuisine.webp", jpg: "/images/cuisine.jpg", alt: "Pièce à remettre en ordre après travaux ou débarras", w: 1280, h: 853 })}
+    </div>
+  </section>`,
+});
+
+pageShell({
+  file: "tri-et-recuperation.html",
+  title: "Tri et récupération | Leroy du Débarras en Corrèze",
+  desc: "Tri des déchets, ferraille, inox et cuivre, séparation des matériaux et évacuation vers les filières adaptées. Leroy du Débarras, Marcillac-la-Croisille.",
+  path: "/tri-et-recuperation.html",
+  h1: "Tri et récupération",
+  lede: "Séparer les matériaux sur place, c’est alléger l’évacuation et diriger chaque flux vers une filière adaptée, selon ce qui est réellement présent.",
+  crumbs: [
+    { href: "/", label: "Accueil" },
+    { href: "/services.html", label: "Services" },
+    { href: "/tri-et-recuperation.html", label: "Tri et récupération" },
+  ],
+  faq: faqTri,
+  jsonldExtra: serviceNode(
+    "Tri et récupération",
+    "/tri-et-recuperation.html",
+    "Tri des déchets, ferraille, inox, cuivre et évacuation vers les filières adaptées.",
+  ),
+  bodyInner: `
+  <section>
+    <div class="container split">
+      <div class="prose">
+        <h2>Ce qui est trié</h2>
+        <ul>
+          <li>Tri des déchets</li>
+          <li>Tri de la ferraille</li>
+          <li>Tri de l’inox</li>
+          <li>Tri du cuivre</li>
+          <li>Séparation des différents matériaux</li>
+          <li>Évacuation des déchets vers les filières adaptées</li>
+        </ul>
+        <p>Aucun partenariat inventé : le circuit exact se précise au devis selon le chantier. Voir aussi l’<a href="/evacuation.html">évacuation</a> et le <a href="/debarras-maison.html">débarras de maisons</a>.</p>
+      </div>
+      ${pic({ webp: "/images/meubles.webp", jpg: "/images/meubles.jpg", alt: "Objets et matériaux à trier avant évacuation", w: 1280, h: 768 })}
+    </div>
+  </section>`,
+});
+
+pageShell({
+  file: "evacuation.html",
+  title: "Évacuation, chargement et transport | Leroy du Débarras",
+  desc: "Chargement, transport, remorquage, évacuation vers la déchetterie, déchets verts, ferraille et matériaux. Leroy du Débarras en Corrèze.",
+  path: "/evacuation.html",
+  h1: "Évacuation",
+  lede: "Une fois le tri fait, il reste à charger, transporter et évacuer. Le volume et l’accès déterminent l’organisation du chantier.",
+  crumbs: [
+    { href: "/", label: "Accueil" },
+    { href: "/services.html", label: "Services" },
+    { href: "/evacuation.html", label: "Évacuation" },
+  ],
+  jsonldExtra: serviceNode(
+    "Évacuation et transport",
+    "/evacuation.html",
+    "Chargement, transport, remorquage et évacuation vers la déchetterie.",
+  ),
+  bodyInner: `
+  <section>
+    <div class="container split">
+      <div class="prose">
+        <h2>Chargement et transport</h2>
+        <ul>
+          <li>Chargement</li>
+          <li>Transport</li>
+          <li>Remorquage</li>
+          <li>Évacuation vers la déchetterie</li>
+          <li>Évacuation des déchets verts</li>
+          <li>Évacuation de ferraille et matériaux</li>
+        </ul>
+        <p>Utile après un <a href="/debarras-maison.html">débarras</a>, un <a href="/nettoyage-fin-chantier.html">chantier</a> ou des <a href="/nettoyage-exterieur.html">travaux extérieurs</a>.</p>
+      </div>
+      ${pic({ webp: "/images/portail.webp", jpg: "/images/portail.jpg", alt: "Accès à une propriété pour chargement et évacuation", w: 1280, h: 720 })}
     </div>
   </section>`,
 });
 
 pageShell({
   file: "zones-intervention.html",
-  title: "Zones d’intervention en Corrèze | Leroy Débarras",
+  title: "Zones d’intervention en Corrèze | Leroy du Débarras",
   desc: "Débarras et nettoyage autour de Marcillac-la-Croisille : secteurs d’Égletons, de Tulle et d’Argentat-sur-Dordogne. Demandez confirmation pour une commune plus loin.",
   path: "/zones-intervention.html",
   h1: "Zones d’intervention",
@@ -833,11 +1009,11 @@ pageShell({
 
 pageShell({
   file: "a-propos.html",
-  title: "À propos de Leroy Débarras | Entreprise locale en Corrèze",
-  desc: "Leroy Débarras, entreprise locale à Marcillac-la-Croisille : débarras, nettoyage extérieur et élagage, avec un contact simple et un travail soigné.",
+  title: "À propos de Leroy du Débarras | Entreprise locale en Corrèze",
+  desc: "Leroy du Débarras, entreprise locale à Marcillac-la-Croisille : débarras, nettoyage, tri et évacuation, avec un contact simple et un travail soigné.",
   path: "/a-propos.html",
   h1: "Une entreprise locale à votre service",
-  lede: "Proximité, disponibilité, travail soigné. Pas de récit inventé : les détails personnels seront ajoutés lorsqu’ils seront fournis.",
+  lede: "Leroy du Débarras est dirigée par Cory Leroy, à Marcillac-la-Croisille. Entreprise créée en 2026. Expérience : 5 ans.",
   crumbs: [
     { href: "/", label: "Accueil" },
     { href: "/a-propos.html", label: "À propos" },
@@ -847,7 +1023,8 @@ pageShell({
     <div class="container split">
       <div class="prose">
         <h2>Travailler ici, avec les maisons d’ici</h2>
-        <p>Leroy Débarras accompagne les particuliers du secteur de Marcillac-la-Croisille pour vider un logement, évacuer des encombrants et remettre un terrain en état. L’idée est simple : un interlocuteur, un devis clair, un chantier adapté au volume réel.</p>
+        <p>Leroy du Débarras est dirigée par Cory Leroy. L’entreprise a été créée en 2026. Cory Leroy a 5 ans d’expérience dans le métier.</p>
+        <p>Nous intervenons pour remettre en état vos espaces, évacuer ce qui vous encombre et vous débarrasser des déchets et objets dont vous n’avez plus besoin. L’idée est simple : un interlocuteur, un devis clair, un chantier adapté au volume réel.</p>
         <h3>Ce que vous pouvez attendre</h3>
         <ul>
           <li>Proximité et connaissance du secteur</li>
@@ -857,11 +1034,8 @@ pageShell({
           <li>Transparence sur ce qui est possible ou non sur place</li>
         </ul>
         <div class="placeholder-box">
-          <p><strong>Champs à compléter par l’entreprise</strong></p>
+          <p><strong>À compléter encore</strong></p>
           <ul>
-            <li>Nom du dirigeant : <span data-site="OWNER_NAME">À renseigner</span></li>
-            <li>Année de création : <span data-site="YEAR_FOUNDED">À renseigner</span></li>
-            <li>Expérience : <span data-site="EXPERIENCE">À renseigner</span></li>
             <li>Photo réelle de l’équipe ou du dirigeant : à ajouter dans /images/</li>
             <li>Assurances : <span data-site="INSURANCE">À renseigner</span></li>
             <li>Certifications : <span data-site="CERTIFICATIONS">À renseigner</span></li>
@@ -912,13 +1086,16 @@ const contactForm = `
     <div>
       <label for="service">Type de prestation</label>
       <select id="service" name="service">
-        <option value="debarras-maison">Débarras de maison</option>
-        <option value="vide-maison">Vide-maison</option>
+        <option value="debarras-maison">Débarras de maison / logement</option>
         <option value="appartement">Débarras d’appartement</option>
+        <option value="grange">Grange / hangar / garage</option>
+        <option value="piece">Une pièce / encombrants</option>
+        <option value="chantier">Nettoyage après chantier</option>
+        <option value="exterieur">Travaux extérieurs</option>
+        <option value="gouttieres">Nettoyage de gouttières</option>
+        <option value="tri">Tri et récupération</option>
+        <option value="evacuation">Évacuation</option>
         <option value="succession">Après succession</option>
-        <option value="cave">Cave / grenier / garage</option>
-        <option value="exterieur">Nettoyage extérieur</option>
-        <option value="elagage">Élagage</option>
         <option value="autre">Autre / plusieurs</option>
       </select>
     </div>
@@ -927,7 +1104,8 @@ const contactForm = `
       <select id="housing" name="housing">
         <option value="maison">Maison</option>
         <option value="appartement">Appartement</option>
-        <option value="dependance">Dépendance seule</option>
+        <option value="dependance">Grange / hangar / garage</option>
+        <option value="piece">Une pièce / cave</option>
         <option value="terrain">Terrain / extérieur</option>
         <option value="autre">Autre</option>
       </select>
@@ -969,8 +1147,8 @@ const contactForm = `
 
 pageShell({
   file: "contact.html",
-  title: "Demander un devis | Leroy Débarras à Marcillac-la-Croisille",
-  desc: "Demandez un devis gratuit pour un débarras, un vide-maison, un nettoyage extérieur ou un élagage à Marcillac-la-Croisille et en Corrèze.",
+  title: "Demander un devis | Leroy du Débarras à Marcillac-la-Croisille",
+  desc: "Demandez un devis gratuit pour un débarras, un nettoyage, des travaux extérieurs, un tri ou une évacuation à Marcillac-la-Croisille et en Corrèze.",
   path: "/contact.html",
   h1: "Demander un devis",
   lede: "Décrivez le besoin. Le téléphone et l’e-mail publics s’afficheront ici dès qu’ils seront communiqués par l’entreprise.",
@@ -989,7 +1167,7 @@ pageShell({
         <p data-require="ADDRESS">Adresse : <span data-site="ADDRESS"></span>, <span data-site="POSTAL_CODE" data-empty=""></span> <span data-site="CITY"></span></p>
         <p>Zone : Marcillac-la-Croisille et communes alentours. Voir les <a href="/zones-intervention.html">secteurs</a>.</p>
         <p>NAP (Google Business Profile) : le nom, l’adresse et le téléphone devront être identiques ici, sur la fiche Google et sur les mentions légales, dès qu’ils seront fournis. Rien n’est inventé en attendant.</p>
-        <p><a class="btn btn-ghost" href="/contact.html" data-phone-link="label" hidden>Appeler Leroy Débarras</a></p>
+        <p><a class="btn btn-ghost" href="/contact.html" data-phone-link="label" hidden>Appeler Leroy du Débarras</a></p>
       </aside>
     </div>
   </section>`,
@@ -1019,30 +1197,30 @@ function legalPage({ file, title, desc, path, h1, inner }) {
 
 legalPage({
   file: "mentions-legales.html",
-  title: "Mentions légales | Leroy Débarras",
-  desc: "Mentions légales du site Leroy Débarras. Informations d’entreprise à compléter avant mise en production.",
+  title: "Mentions légales | Leroy du Débarras",
+  desc: "Mentions légales du site Leroy du Débarras. Informations d’entreprise à compléter avant mise en production.",
   path: "/mentions-legales.html",
   h1: "Mentions légales",
   inner: `
   <p>Les mentions ci-dessous sont des <strong>emplacements à compléter</strong>. Aucune information juridique n’a été inventée.</p>
   <ul>
     <li>Raison sociale : <span data-site="LEGAL_NAME">À renseigner</span></li>
-    <li>Nom commercial : Leroy Débarras</li>
+    <li>Nom commercial : Leroy du Débarras</li>
     <li>Statut juridique : <span data-site="LEGAL_FORM">À renseigner</span></li>
-    <li>SIRET : <span data-site="SIRET">À renseigner</span></li>
-    <li>Adresse : <span data-site="ADDRESS">À renseigner</span>, <span data-site="POSTAL_CODE" data-empty="">À renseigner</span> <span data-site="CITY">Marcillac-la-Croisille</span></li>
+    <li>SIRET : <span data-site="SIRET">${esc(site.SIRET || "À renseigner")}</span></li>
+    <li>Adresse : <span data-site="ADDRESS">${esc(site.ADDRESS || "À renseigner")}</span>, <span data-site="POSTAL_CODE" data-empty="">${esc(site.POSTAL_CODE || "")}</span> <span data-site="CITY">${esc(site.CITY || "Marcillac-la-Croisille")}</span></li>
     <li>Responsable de publication : <span data-site="PUBLICATION_DIRECTOR">À renseigner</span></li>
     <li>E-mail : <span data-site="EMAIL">À renseigner</span></li>
-    <li>Téléphone : <span data-site="PHONE">À renseigner</span></li>
+    <li>Téléphone : <span data-site="PHONE_DISPLAY">${esc(site.PHONE_DISPLAY || site.PHONE || "À renseigner")}</span></li>
     <li>Hébergeur : <span data-site="HOSTING">À renseigner</span></li>
   </ul>
-  <p>Le site présente les activités de débarras et de remise en état autour de Marcillac-la-Croisille. Le nom de domaine définitif sera indiqué dans la configuration <code>SITE_URL</code>.</p>`,
+  <p>Le site présente les activités de débarras, nettoyage, tri et évacuation autour de Marcillac-la-Croisille. Le nom de domaine définitif sera indiqué dans la configuration <code>SITE_URL</code>.</p>`,
 });
 
 legalPage({
   file: "politique-confidentialite.html",
-  title: "Politique de confidentialité | Leroy Débarras",
-  desc: "Politique de confidentialité du site Leroy Débarras, préparée pour le futur formulaire de devis.",
+  title: "Politique de confidentialité | Leroy du Débarras",
+  desc: "Politique de confidentialité du site Leroy du Débarras, préparée pour le futur formulaire de devis.",
   path: "/politique-confidentialite.html",
   h1: "Politique de confidentialité",
   inner: `
@@ -1056,7 +1234,7 @@ legalPage({
   <h2>Durée de conservation</h2>
   <p><strong>À renseigner</strong> (exemple courant : le temps du devis puis archivage limité — à valider juridiquement).</p>
   <h2>Destinataires</h2>
-  <p>Leroy Débarras, et le prestataire technique d’envoi lorsqu’il sera choisi (e-mail, backend ou CRM). Champ : <span data-site="FORM_ENDPOINT">non connecté</span>.</p>
+  <p>Leroy du Débarras, et le prestataire technique d’envoi lorsqu’il sera choisi (e-mail, backend ou CRM). Champ : <span data-site="FORM_ENDPOINT">non connecté</span>.</p>
   <h2>Droits</h2>
   <p>Accès, rectification, effacement, opposition : demander via l’e-mail qui sera publié. Autorité de contrôle : CNIL.</p>
   <h2>Cookies</h2>
@@ -1066,8 +1244,8 @@ legalPage({
 pages.push({
   file: "404.html",
   html: layout({
-    title: "Page introuvable | Leroy Débarras",
-    desc: "La page demandée n’existe pas sur le site Leroy Débarras.",
+    title: "Page introuvable | Leroy du Débarras",
+    desc: "La page demandée n’existe pas sur le site Leroy du Débarras.",
     path: "/404.html",
     current: "/",
     noindex: true,
@@ -1099,7 +1277,9 @@ const indexable = [
   ["/debarras-succession.html", "debarras-succession.html"],
   ["/caves-greniers-garages.html", "caves-greniers-garages.html"],
   ["/nettoyage-exterieur.html", "nettoyage-exterieur.html"],
-  ["/elagage.html", "elagage.html"],
+  ["/nettoyage-fin-chantier.html", "nettoyage-fin-chantier.html"],
+  ["/tri-et-recuperation.html", "tri-et-recuperation.html"],
+  ["/evacuation.html", "evacuation.html"],
   ["/zones-intervention.html", "zones-intervention.html"],
   ["/a-propos.html", "a-propos.html"],
   ["/contact.html", "contact.html"],

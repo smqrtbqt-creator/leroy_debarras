@@ -1,5 +1,5 @@
 /**
- * Configuration centrale — Leroy Débarras
+ * Configuration centrale — Leroy du Débarras
  * Une seule source pour le domaine, le nom et les données d’entreprise.
  *
  * Avant mise en production :
@@ -14,24 +14,24 @@
 
   var SITE = {
     SITE_URL: "https://www.leroy-debarras.fr",
-    SITE_NAME: "Leroy Débarras",
-    BUSINESS_NAME: "Leroy Débarras",
+    SITE_NAME: "Leroy du Débarras",
+    BUSINESS_NAME: "Leroy du Débarras",
     CITY: "Marcillac-la-Croisille",
     REGION: "Corrèze",
-    POSTAL_CODE: null,
-    ADDRESS: null,
-    PHONE: null,
-    PHONE_DISPLAY: null,
+    POSTAL_CODE: "19320",
+    ADDRESS: "20 Lieu dit Nougein",
+    PHONE: "0637780131",
+    PHONE_DISPLAY: "06 37 78 01 31",
     EMAIL: null,
     FORM_ENDPOINT: null,
-    OWNER_NAME: null,
+    OWNER_NAME: "Cory Leroy",
     LEGAL_NAME: null,
     LEGAL_FORM: null,
-    SIRET: null,
+    SIRET: "999337603 00016",
     PUBLICATION_DIRECTOR: null,
     HOSTING: null,
-    YEAR_FOUNDED: null,
-    EXPERIENCE: null,
+    YEAR_FOUNDED: "2026",
+    EXPERIENCE: "5 ans",
     INSURANCE: null,
     CERTIFICATIONS: null,
     GEO_LAT: null,
