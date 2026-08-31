@@ -196,7 +196,7 @@ function layout({ title, desc, path, current, noindex, jsonld, extraHead, body }
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${esc(title)}</title>
   <meta name="description" content="${esc(desc)}">
   <meta name="robots" content="${robots}">
@@ -295,10 +295,12 @@ if (site.ADDRESS || site.POSTAL_CODE || site.CITY) {
 }
 
 function serviceNode(name, url, desc) {
+  const pageUrl = abs(url);
   return {
     "@type": "Service",
+    "@id": `${pageUrl}#service`,
     name,
-    url: abs(url),
+    url: pageUrl,
     provider: { "@id": abs("/#business") },
     areaServed: { "@type": "City", name: "Marcillac-la-Croisille" },
     description: desc,
@@ -527,7 +529,7 @@ function pageShell({ file, title, desc, path, h1, lede, crumbs, faq, jsonldExtra
   const items = crumbs;
   const jsonld = [businessNode, breadcrumbJson(items)];
   if (jsonldExtra) jsonld.push(...(Array.isArray(jsonldExtra) ? jsonldExtra : [jsonldExtra]));
-  if (faq) jsonld.push(faqJson(faq));
+  if (faq) jsonld.push(faqJson(faq, { id: abs(`${path}#faq`), url: abs(path) }));
   pages.push({
     file,
     html: layout({
