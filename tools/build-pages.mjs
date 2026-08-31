@@ -29,7 +29,7 @@ function esc(s) {
     .replace(/"/g, "&quot;");
 }
 
-function pic({ webp, jpg, alt, w, h, className, lazy = true, fetchpriority }) {
+function pic({ webp, jpg, alt = "", w, h, className, lazy = true, fetchpriority }) {
   const extra = [
     className ? `class="${className}"` : "",
     lazy ? `loading="lazy" decoding="async"` : `decoding="async"`,
@@ -186,7 +186,7 @@ function footer() {
 
 function layout({ title, desc, path, current, noindex, jsonld, extraHead, body }) {
   const robots = noindex ? "noindex, follow" : "index, follow";
-  const canonical = abs(path);
+  const canonical = path === "/" ? `${BASE}/` : abs(path);
   const ogImage = abs(site.SOCIAL_IMAGE || "/images/og-social.jpg");
   const graph = Array.isArray(jsonld) ? jsonld : jsonld ? [jsonld] : [];
   return `<!DOCTYPE html>
@@ -256,7 +256,11 @@ if (site.OWNER_NAME) {
   businessNode.founder = { "@type": "Person", name: String(site.OWNER_NAME) };
 }
 if (site.SIRET) {
-  businessNode.taxID = String(site.SIRET).replace(/\s/g, "");
+  businessNode.identifier = {
+    "@type": "PropertyValue",
+    propertyID: "SIRET",
+    value: String(site.SIRET).replace(/\s/g, ""),
+  };
 }
 if (site.PHONE) {
   const digits = String(site.PHONE).replace(/[^\d]/g, "");
@@ -269,8 +273,8 @@ if (site.PHONE) {
 if (site.ADDRESS || site.POSTAL_CODE || site.CITY) {
   businessNode.address = {
     "@type": "PostalAddress",
-    streetAddress: site.ADDRESS || undefined,
-    postalCode: site.POSTAL_CODE || undefined,
+    ...(site.ADDRESS ? { streetAddress: site.ADDRESS } : {}),
+    ...(site.POSTAL_CODE ? { postalCode: site.POSTAL_CODE } : {}),
     addressLocality: site.CITY || "Marcillac-la-Croisille",
     addressRegion: site.REGION || "Corrèze",
     addressCountry: "FR",
@@ -378,8 +382,8 @@ const pages = [];
 pages.push({
   file: "index.html",
   html: layout({
-    title: "Débarras, nettoyage et évacuation à Marcillac-la-Croisille | Leroy du Débarras",
-    desc: "Leroy du Débarras remet en état vos espaces, évacue ce qui vous encombre et débarrasse déchets et objets inutiles à Marcillac-la-Croisille et en Corrèze. Devis gratuit.",
+    title: "Débarras, Nettoyage & Évacuation | Leroy Débarras",
+    desc: "Débarras de maisons, granges et garages : nettoyage, évacuation des déchets et enlèvement de végétaux.",
     path: "/",
     current: "/",
     extraHead: `<link rel="preload" as="image" href="/images/hero.webp" type="image/webp">`,
@@ -405,7 +409,7 @@ pages.push({
       ${pic({
         webp: "/images/hero.webp",
         jpg: "/images/hero.jpg",
-        alt: "Balai et pelle, matériel de nettoyage et de travaux extérieurs",
+        alt: "",
         w: 1600,
         h: 900,
         lazy: false,

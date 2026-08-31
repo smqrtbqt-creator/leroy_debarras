@@ -13,7 +13,7 @@
   "use strict";
 
   var SITE = {
-    SITE_URL: "https://www.leroy-debarras.fr",
+    SITE_URL: "https://leroydudebaras.fr",
     SITE_NAME: "Leroy du Débarras",
     BUSINESS_NAME: "Leroy du Débarras",
     CITY: "Marcillac-la-Croisille",

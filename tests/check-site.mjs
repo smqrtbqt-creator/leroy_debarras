@@ -69,6 +69,49 @@ if (!index.includes("Débarras, nettoyage et évacuation à Marcillac-la-Croisil
 }
 if (!index.includes("application/ld+json")) fail("JSON-LD accueil");
 
+const indexTitle = (index.match(/<title>([^<]+)<\/title>/) || [])[1];
+const indexDesc = (index.match(/name="description" content="([^"]+)"/) || [])[1];
+const indexCanon = (index.match(/rel="canonical" href="([^"]+)"/) || [])[1];
+const expectedTitle = "Débarras, Nettoyage &amp; Évacuation | Leroy Débarras";
+const expectedDesc =
+  "Débarras de maisons, granges et garages : nettoyage, évacuation des déchets et enlèvement de végétaux.";
+const expectedCanon = "https://leroydudebaras.fr/";
+
+if (indexTitle !== expectedTitle) fail(`title accueil : "${indexTitle}"`);
+else ok("title accueil");
+if (indexDesc !== expectedDesc) fail(`description accueil : ${indexDesc?.length} car.`);
+else ok("description accueil");
+if (indexCanon !== expectedCanon) fail(`canonical accueil : ${indexCanon}`);
+else ok("canonical accueil");
+if ((index.match(/rel="canonical"/g) || []).length !== 1) fail("canonical accueil multiple");
+if ((index.match(/<meta name="description"/g) || []).length !== 1) fail("description accueil multiple");
+if (indexTitle.length > 60) fail(`title accueil trop long (${indexTitle.length})`);
+if (indexDesc.length < 100 || indexDesc.length > 130) {
+  fail(`description accueil hors plage (${indexDesc.length})`);
+}
+
+const jsonldMatch = index.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
+if (jsonldMatch) {
+  try {
+    const data = JSON.parse(jsonldMatch[1]);
+    if (!data["@graph"]?.length) fail("JSON-LD accueil sans @graph");
+    else ok("JSON-LD accueil valide");
+    if (JSON.stringify(data).includes('"taxID"')) fail("JSON-LD accueil contient taxID");
+  } catch {
+    fail("JSON-LD accueil invalide");
+  }
+}
+
+for (const file of htmlFiles) {
+  const html = fs.readFileSync(path.join(root, file), "utf8");
+  const imgs = html.match(/<img\b[^>]*>/g) || [];
+  for (const img of imgs) {
+    if (!/\balt=/.test(img)) fail(`${file} : img sans attribut alt`);
+  }
+  if ((html.match(/rel="canonical"/g) || []).length > 1) fail(`${file} : canonical multiple`);
+  if ((html.match(/<meta name="description"/g) || []).length > 1) fail(`${file} : description multiple`);
+}
+
 ok(`${htmlFiles.length} pages HTML`);
 ok(`${titles.size} titles uniques`);
 if (fails) {
