@@ -117,8 +117,8 @@ function faqBlock(items) {
   </section>`;
 }
 
-function faqJson(items) {
-  return {
+function faqJson(items, { id, url } = {}) {
+  const node = {
     "@type": "FAQPage",
     mainEntity: items.map((it) => ({
       "@type": "Question",
@@ -126,6 +126,9 @@ function faqJson(items) {
       acceptedAnswer: { "@type": "Answer", text: it.a.replace(/<[^>]+>/g, "") },
     })),
   };
+  if (id) node["@id"] = id;
+  if (url) node.url = url;
+  return node;
 }
 
 function ctaBand(title, text) {
@@ -245,13 +248,23 @@ const businessNode = {
   "@id": abs("/#business"),
   name: site.BUSINESS_NAME || "Leroy du Débarras",
   url: abs("/"),
-  image: abs("/images/og-social.jpg"),
+  description:
+    "Débarras, nettoyage et évacuation à Marcillac-la-Croisille : maisons, granges, garages, tri et enlèvement des déchets.",
+  image: {
+    "@type": "ImageObject",
+    url: abs("/images/og-social.jpg"),
+    width: 1200,
+    height: 630,
+  },
   areaServed: [
     { "@type": "City", name: "Marcillac-la-Croisille" },
     { "@type": "AdministrativeArea", name: "Corrèze" },
   ],
 };
-if (site.YEAR_FOUNDED) businessNode.foundingDate = String(site.YEAR_FOUNDED);
+if (site.YEAR_FOUNDED) {
+  const year = String(site.YEAR_FOUNDED);
+  businessNode.foundingDate = /^\d{4}$/.test(year) ? `${year}-01-01` : year;
+}
 if (site.OWNER_NAME) {
   businessNode.founder = { "@type": "Person", name: String(site.OWNER_NAME) };
 }
@@ -397,19 +410,14 @@ pages.push({
         publisher: { "@id": abs("/#business") },
         inLanguage: "fr-FR",
       },
-      serviceNode(
-        "Débarras de maison",
-        "/debarras-maison.html",
-        "Débarras de maisons à Marcillac-la-Croisille et alentours.",
-      ),
-      faqJson(faqHome),
+      faqJson(faqHome, { id: abs("/#faq"), url: abs("/") }),
     ],
     body: `
     <section class="hero">
       ${pic({
         webp: "/images/hero.webp",
         jpg: "/images/hero.jpg",
-        alt: "",
+        alt: "Balai et pelle, matériel de nettoyage et de débarras",
         w: 1600,
         h: 900,
         lazy: false,

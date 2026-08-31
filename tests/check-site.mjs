@@ -97,6 +97,12 @@ if (jsonldMatch) {
     if (!data["@graph"]?.length) fail("JSON-LD accueil sans @graph");
     else ok("JSON-LD accueil valide");
     if (JSON.stringify(data).includes('"taxID"')) fail("JSON-LD accueil contient taxID");
+    const types = data["@graph"].map((n) => n["@type"]);
+    if (!types.includes("LocalBusiness") || !types.includes("WebSite") || !types.includes("FAQPage")) {
+      fail("JSON-LD accueil : types manquants");
+    }
+    const biz = data["@graph"].find((n) => n["@type"] === "LocalBusiness");
+    if (!biz?.description || !biz?.image?.url) fail("JSON-LD LocalBusiness incomplet");
   } catch {
     fail("JSON-LD accueil invalide");
   }
@@ -107,6 +113,7 @@ for (const file of htmlFiles) {
   const imgs = html.match(/<img\b[^>]*>/g) || [];
   for (const img of imgs) {
     if (!/\balt=/.test(img)) fail(`${file} : img sans attribut alt`);
+    if (/alt=""/.test(img) && file === "index.html") fail(`${file} : img avec alt vide`);
   }
   if ((html.match(/rel="canonical"/g) || []).length > 1) fail(`${file} : canonical multiple`);
   if ((html.match(/<meta name="description"/g) || []).length > 1) fail(`${file} : description multiple`);
