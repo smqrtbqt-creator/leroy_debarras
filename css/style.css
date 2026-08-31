@@ -34,6 +34,7 @@
 
 html {
   scroll-behavior: smooth;
+  font-size: 16px;
 }
 
 body {
@@ -41,8 +42,11 @@ body {
   color: var(--text);
   background: var(--paper);
   line-height: 1.65;
+  font-size: 1rem;
   text-rendering: optimizeLegibility;
   min-height: 100vh;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 img {
@@ -116,8 +120,9 @@ ul {
 }
 
 .logo span {
-  font-size: 0.78rem;
+  font-size: 0.875rem;
   color: var(--muted);
+  line-height: 1.3;
 }
 
 .nav-toggle {
@@ -742,17 +747,23 @@ textarea {
   .sticky-cta {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: 10px;
     position: sticky;
     bottom: 0;
     z-index: 90;
-    padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
     background: rgba(251, 248, 242, 0.96);
     border-top: 1px solid var(--line);
   }
 
   .sticky-cta a {
     min-height: 48px;
+    min-width: 48px;
+  }
+
+  .sticky-cta .btn-ghost[hidden],
+  .sticky-cta a[hidden] {
+    display: none !important;
   }
 
   .sticky-cta:not(:has([data-phone-link]:not([hidden]))) {

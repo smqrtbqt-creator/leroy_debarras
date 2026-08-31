@@ -72,7 +72,7 @@ if (!index.includes("application/ld+json")) fail("JSON-LD accueil");
 const indexTitle = (index.match(/<title>([^<]+)<\/title>/) || [])[1];
 const indexDesc = (index.match(/name="description" content="([^"]+)"/) || [])[1];
 const indexCanon = (index.match(/rel="canonical" href="([^"]+)"/) || [])[1];
-const expectedTitle = "Débarras, Nettoyage &amp; Évacuation | Leroy Débarras";
+const expectedTitle = "Débarras, Nettoyage &amp; Évacuation | Leroy du Débarras";
 const expectedDesc =
   "Débarras de maisons, granges et garages : nettoyage, évacuation des déchets et enlèvement de végétaux.";
 const expectedCanon = "https://leroydudebaras.fr/";
@@ -85,10 +85,15 @@ if (indexCanon !== expectedCanon) fail(`canonical accueil : ${indexCanon}`);
 else ok("canonical accueil");
 if ((index.match(/rel="canonical"/g) || []).length !== 1) fail("canonical accueil multiple");
 if ((index.match(/<meta name="description"/g) || []).length !== 1) fail("description accueil multiple");
-if (indexTitle.length > 60) fail(`title accueil trop long (${indexTitle.length})`);
+if (indexTitle.replace(/&amp;/g, "&").length < 50 || indexTitle.replace(/&amp;/g, "&").length > 60) {
+  fail(`title accueil hors plage (${indexTitle.replace(/&amp;/g, "&").length})`);
+}
 if (indexDesc.length < 100 || indexDesc.length > 130) {
   fail(`description accueil hors plage (${indexDesc.length})`);
 }
+if (!index.includes('hreflang="fr"') || !index.includes('hreflang="x-default"')) {
+  fail("hreflang accueil manquant");
+} else ok("hreflang accueil");
 
 const jsonldMatch = index.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
 if (jsonldMatch) {
@@ -96,13 +101,21 @@ if (jsonldMatch) {
     const data = JSON.parse(jsonldMatch[1]);
     if (!data["@graph"]?.length) fail("JSON-LD accueil sans @graph");
     else ok("JSON-LD accueil valide");
-    if (JSON.stringify(data).includes('"taxID"')) fail("JSON-LD accueil contient taxID");
-    const types = data["@graph"].map((n) => n["@type"]);
-    if (!types.includes("LocalBusiness") || !types.includes("WebSite") || !types.includes("FAQPage")) {
+    const raw = JSON.stringify(data);
+    if (raw.includes('"taxID"') || raw.includes('"vatID"') || raw.includes('"FAQPage"')) {
+      fail("JSON-LD accueil : taxID/vatID/FAQPage non attendus");
+    }
+    const types = data["@graph"].flatMap((n) => (Array.isArray(n["@type"]) ? n["@type"] : [n["@type"]]));
+    if (!types.includes("LocalBusiness") || !types.includes("WebSite")) {
       fail("JSON-LD accueil : types manquants");
     }
-    const biz = data["@graph"].find((n) => n["@type"] === "LocalBusiness");
-    if (!biz?.description || !biz?.image?.url) fail("JSON-LD LocalBusiness incomplet");
+    const biz = data["@graph"].find((n) => {
+      const t = n["@type"];
+      return t === "LocalBusiness" || (Array.isArray(t) && t.includes("LocalBusiness"));
+    });
+    if (!biz?.description || !biz?.image || !biz?.telephone || !biz?.address) {
+      fail("JSON-LD LocalBusiness incomplet");
+    }
   } catch {
     fail("JSON-LD accueil invalide");
   }

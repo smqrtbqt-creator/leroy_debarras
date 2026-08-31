@@ -201,6 +201,8 @@ function layout({ title, desc, path, current, noindex, jsonld, extraHead, body }
   <meta name="description" content="${esc(desc)}">
   <meta name="robots" content="${robots}">
   <link rel="canonical" href="${canonical}">
+  <link rel="alternate" hreflang="fr" href="${canonical}">
+  <link rel="alternate" hreflang="x-default" href="${canonical}">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="fr_FR">
@@ -217,7 +219,9 @@ function layout({ title, desc, path, current, noindex, jsonld, extraHead, body }
   <meta name="twitter:image" content="${ogImage}">
   <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
-  <link rel="stylesheet" href="https://fonts.bunny.net/css?family=source-sans-3:400,600,700|literata:500,600,700&amp;display=swap">
+  <link rel="preload" as="style" href="https://fonts.bunny.net/css?family=source-sans-3:400,600,700|literata:500,600,700&amp;display=swap">
+  <link rel="stylesheet" href="https://fonts.bunny.net/css?family=source-sans-3:400,600,700|literata:500,600,700&amp;display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.bunny.net/css?family=source-sans-3:400,600,700|literata:500,600,700&amp;display=swap"></noscript>
   <link rel="stylesheet" href="/css/style.min.css">
   ${extraHead || ""}
   ${
@@ -244,36 +248,27 @@ function layout({ title, desc, path, current, noindex, jsonld, extraHead, body }
 }
 
 const businessNode = {
-  "@type": "LocalBusiness",
+  "@type": ["LocalBusiness", "HomeAndConstructionBusiness"],
   "@id": abs("/#business"),
   name: site.BUSINESS_NAME || "Leroy du Débarras",
   url: abs("/"),
   description:
     "Débarras, nettoyage et évacuation à Marcillac-la-Croisille : maisons, granges, garages, tri et enlèvement des déchets.",
-  image: {
-    "@type": "ImageObject",
-    url: abs("/images/og-social.jpg"),
-    width: 1200,
-    height: 630,
-  },
+  image: abs("/images/og-social.jpg"),
+  logo: abs("/images/og-social.jpg"),
   areaServed: [
     { "@type": "City", name: "Marcillac-la-Croisille" },
     { "@type": "AdministrativeArea", name: "Corrèze" },
   ],
 };
 if (site.YEAR_FOUNDED) {
-  const year = String(site.YEAR_FOUNDED);
-  businessNode.foundingDate = /^\d{4}$/.test(year) ? `${year}-01-01` : year;
+  businessNode.foundingDate = String(site.YEAR_FOUNDED).trim();
 }
 if (site.OWNER_NAME) {
   businessNode.founder = { "@type": "Person", name: String(site.OWNER_NAME) };
 }
-if (site.SIRET) {
-  businessNode.identifier = {
-    "@type": "PropertyValue",
-    propertyID: "SIRET",
-    value: String(site.SIRET).replace(/\s/g, ""),
-  };
+if (Array.isArray(site.SAME_AS) && site.SAME_AS.length) {
+  businessNode.sameAs = site.SAME_AS.filter(Boolean);
 }
 if (site.PHONE) {
   const digits = String(site.PHONE).replace(/[^\d]/g, "");
@@ -397,7 +392,7 @@ const pages = [];
 pages.push({
   file: "index.html",
   html: layout({
-    title: "Débarras, Nettoyage & Évacuation | Leroy Débarras",
+    title: "Débarras, Nettoyage & Évacuation | Leroy du Débarras",
     desc: "Débarras de maisons, granges et garages : nettoyage, évacuation des déchets et enlèvement de végétaux.",
     path: "/",
     current: "/",
@@ -412,7 +407,6 @@ pages.push({
         publisher: { "@id": abs("/#business") },
         inLanguage: "fr-FR",
       },
-      faqJson(faqHome, { id: abs("/#faq"), url: abs("/") }),
     ],
     body: `
     <section class="hero">
@@ -529,7 +523,7 @@ function pageShell({ file, title, desc, path, h1, lede, crumbs, faq, jsonldExtra
   const items = crumbs;
   const jsonld = [businessNode, breadcrumbJson(items)];
   if (jsonldExtra) jsonld.push(...(Array.isArray(jsonldExtra) ? jsonldExtra : [jsonldExtra]));
-  if (faq) jsonld.push(faqJson(faq, { id: abs(`${path}#faq`), url: abs(path) }));
+  // FAQ HTML reste visible via faqBlock ; pas de FAQPage JSON-LD (rich results FAQ retirés).
   pages.push({
     file,
     html: layout({
