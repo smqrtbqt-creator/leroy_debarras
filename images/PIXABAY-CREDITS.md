@@ -1,4 +1,21 @@
-# Crédits photographiques (Pixabay)
+# Photos du site
+
+## Photos de chantiers (Leroy du Débarras)
+
+Photos fournies par l’entreprise. Pas des images d’illustration.
+
+| Fichier | Sujet |
+| --- | --- |
+| `chantier-interieur.jpg` | Dépendance encombrée, débarras |
+| `chantier-exterieur.jpg` | Travaux extérieurs, évacuation |
+| `chantier-arbre.jpg` | Jardin et arbres |
+| `hero.webp` / `hero.jpg` | Bandeau d’accueil (balai et pelle) |
+| `encombrants.jpg` | Évacuation d’encombrants |
+| `goulotte-chantier.jpg` | Évacuation en façade (goulottes) |
+| `brouette.jpg` | Débarras après chantier |
+| `og-social.jpg` | Image de partage (chantier extérieur) |
+
+## Anciennes photos Pixabay (archives)
 
 Photographies d’illustration, licence [Pixabay Content License](https://pixabay.com/service/license-summary/).
 Fichiers locaux dans `/images/` (JPEG source + WebP). Aucune dépendance CDN en production.

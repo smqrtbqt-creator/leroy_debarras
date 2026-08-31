@@ -404,8 +404,8 @@ pages.push({
     <section class="hero">
       ${pic({
         webp: "/images/hero.webp",
-        jpg: "/images/hero-maison.jpg",
-        alt: "Intérieur d’une maison à vider, meubles et volumes à débarrasser",
+        jpg: "/images/hero.jpg",
+        alt: "Balai et pelle, matériel de nettoyage et de travaux extérieurs",
         w: 1600,
         h: 900,
         lazy: false,
@@ -423,45 +423,50 @@ pages.push({
       </div>
     </section>
     <section>
-      <div class="container">
+      <div class="container prose">
         <h2 class="section-title">Une intervention adaptée à votre besoin</h2>
-        <p class="section-intro">Pas besoin de vider toute votre maison. Vous expliquez la situation, nous évaluons le volume, puis nous avançons jusqu’à l’évacuation et le nettoyage si besoin.</p>
-        <div class="steps">
-          <article class="step"><span class="step-num">1</span><h3>Vous décrivez les lieux</h3><p>Maison, appartement, grange, hangar, jardin, pièce, cave, garage ou quelques encombrants seulement.</p></article>
-          <article class="step"><span class="step-num">2</span><h3>Nous évaluons le volume</h3><p>Chaque chantier est adapté au volume à évacuer et à l’état des lieux.</p></article>
-          <article class="step"><span class="step-num">3</span><h3>Nous trions et débarrassons</h3><p>Ferraille, inox, cuivre, déchets : les matériaux sont séparés lorsque c’est possible.</p></article>
-          <article class="step"><span class="step-num">4</span><h3>Nous chargeons et évacuons</h3><p>Chargement, transport, remorquage si besoin, puis évacuation vers la déchetterie ou les filières adaptées.</p></article>
-          <article class="step"><span class="step-num">5</span><h3>Nous nettoyons si nécessaire</h3><p>Remise en ordre des lieux, y compris après un chantier ou un débarras.</p></article>
-        </div>
+        <p>Pas besoin de vider toute votre maison.</p>
+        <p>Leroy du Débarras peut intervenir pour :</p>
+        <ul>
+          <li>une maison entière ;</li>
+          <li>une grange ;</li>
+          <li>un hangar ;</li>
+          <li>un jardin ;</li>
+          <li>une pièce ;</li>
+          <li>une cave ;</li>
+          <li>un garage ;</li>
+          <li>quelques encombrants seulement.</li>
+        </ul>
+        <p>Chaque intervention est adaptée au volume à évacuer et à l’état des lieux.</p>
       </div>
     </section>
     <section>
       <div class="container">
         <h2 class="section-title">Nos services</h2>
-        <p class="section-intro">Débarras, nettoyage, travaux extérieurs, tri et évacuation. Le devis reste le point d’entrée, sans tarif standard affiché.</p>
+        <p class="section-intro">Débarras de maisons et logements, nettoyage de locaux, travaux extérieurs, tri et récupération, évacuation.</p>
         <div class="cards cards-3">
           <article class="card">
-            ${pic({ webp: "/images/salon-encombre.webp", jpg: "/images/salon-encombre.jpg", alt: "Pièce encombrée à débarrasser dans une maison", w: 1280, h: 847 })}
-            <div class="card-body"><h3>Maisons et logements</h3><p>Maison, appartement, grange, hangar, garage, une seule pièce, après déménagement, encombrants.</p><a class="more" href="/debarras-maison.html">Débarras de maisons</a></div>
+            ${pic({ webp: "/images/goulotte-chantier.webp", jpg: "/images/goulotte-chantier.jpg", alt: "Goulottes de chantier sur une maison pour l’évacuation lors d’un débarras", w: 1024, h: 576 })}
+            <div class="card-body"><h3>Débarras de maisons et logements</h3><p>Maison complète, appartement, grange, hangar, garage, une seule pièce, après déménagement, encombrants.</p><a class="more" href="/debarras-maison.html">Débarras de maisons</a></div>
           </article>
           <article class="card">
-            ${pic({ webp: "/images/piece.webp", jpg: "/images/piece.jpg", alt: "Pièce à remettre en ordre après un débarras", w: 1280, h: 720 })}
-            <div class="card-body"><h3>Nettoyage de locaux</h3><p>Grange, maison, pièces fortement encombrées, remise en ordre et fin de chantier.</p><a class="more" href="/nettoyage-fin-chantier.html">Nettoyage et chantier</a></div>
+            ${pic({ webp: "/images/chantier-interieur.webp", jpg: "/images/chantier-interieur.jpg", alt: "Pièce fortement encombrée à nettoyer et débarrasser", w: 768, h: 1024 })}
+            <div class="card-body"><h3>Débarras et nettoyage de locaux</h3><p>Grange, maison, pièces fortement encombrées, remise en ordre et fin de chantier.</p><a class="more" href="/nettoyage-fin-chantier.html">Nettoyage et chantier</a></div>
           </article>
           <article class="card">
-            ${pic({ webp: "/images/portail.webp", jpg: "/images/portail.jpg", alt: "Accès à une propriété, chargement et évacuation", w: 1280, h: 720 })}
-            <div class="card-body"><h3>Après chantier</h3><p>Matériaux, cartons, déchets et encombrants restants : tri, chargement et évacuation.</p><a class="more" href="/nettoyage-fin-chantier.html">Fin de chantier</a></div>
+            ${pic({ webp: "/images/brouette.webp", jpg: "/images/brouette.jpg", alt: "Brouette de chantier pour le débarras après travaux", w: 1024, h: 682 })}
+            <div class="card-body"><h3>Débarras après chantier</h3><p>Matériaux, cartons, déchets et encombrants restants : nettoyage, tri, chargement et évacuation.</p><a class="more" href="/nettoyage-fin-chantier.html">Fin de chantier</a></div>
           </article>
           <article class="card">
-            ${pic({ webp: "/images/jardin.webp", jpg: "/images/jardin.jpg", alt: "Jardin à remettre en état", w: 1280, h: 853 })}
+            ${pic({ webp: "/images/outils-nettoyage.webp", jpg: "/images/outils-nettoyage.jpg", alt: "Balai et pelle pour le nettoyage, dont les gouttières", w: 1024, h: 682 })}
             <div class="card-body"><h3>Travaux extérieurs</h3><p>Débroussaillage, tonte, gouttières, végétaux, petits arbres, terrains et jardins.</p><a class="more" href="/nettoyage-exterieur.html">Travaux extérieurs</a></div>
           </article>
           <article class="card">
-            ${pic({ webp: "/images/meubles.webp", jpg: "/images/meubles.jpg", alt: "Objets et matériaux à trier avant évacuation", w: 1280, h: 768 })}
+            ${pic({ webp: "/images/encombrants.webp", jpg: "/images/encombrants.jpg", alt: "Encombrants et objets à trier et récupérer", w: 1024, h: 682 })}
             <div class="card-body"><h3>Tri et récupération</h3><p>Déchets, ferraille, inox, cuivre : séparation des matériaux et filières adaptées.</p><a class="more" href="/tri-et-recuperation.html">Tri et récupération</a></div>
           </article>
           <article class="card">
-            ${pic({ webp: "/images/maison-2.webp", jpg: "/images/maison-2.jpg", alt: "Maison et accès, chargement pour évacuation", w: 1280, h: 853 })}
+            ${pic({ webp: "/images/chantier-exterieur.webp", jpg: "/images/chantier-exterieur.jpg", alt: "Remorque chargée pour l’évacuation des déchets verts", w: 1024, h: 768 })}
             <div class="card-body"><h3>Évacuation</h3><p>Chargement, transport, remorquage, déchetterie, déchets verts, ferraille.</p><a class="more" href="/evacuation.html">Évacuation</a></div>
           </article>
         </div>
@@ -482,17 +487,21 @@ pages.push({
     </section>
     <section>
       <div class="container">
-        <h2 class="section-title">Réalisations à venir</h2>
-        <p class="section-intro">Les photos avant / après de vrais chantiers seront ajoutées ici. Aucune mise en scène n’est fabriquée à partir d’images d’illustration.</p>
-        <div class="before-after" data-before-after>
-          <figure>
-            <div class="slot"><strong>AVANT</strong><br>Photo de chantier à ajouter</div>
-            <figcaption>Emplacement réservé — photo réelle du client</figcaption>
-          </figure>
-          <figure>
-            <div class="slot"><strong>APRÈS</strong><br>Photo de chantier à ajouter</div>
-            <figcaption>Débarras et remise en état — secteur à préciser (ex. Marcillac-la-Croisille)</figcaption>
-          </figure>
+        <h2 class="section-title">Chantiers réalisés</h2>
+        <p class="section-intro">Photos de chantiers Leroy du Débarras, autour de Marcillac-la-Croisille.</p>
+        <div class="cards cards-3">
+          <article class="card">
+            ${pic({ webp: "/images/chantier-interieur.webp", jpg: "/images/chantier-interieur.jpg", alt: "Dépendance encombrée : débarras et nettoyage", w: 768, h: 1024 })}
+            <div class="card-body"><h3>Débarras</h3><p>Cave, grange ou dépendance : tri et évacuation des encombrants.</p></div>
+          </article>
+          <article class="card">
+            ${pic({ webp: "/images/chantier-exterieur.webp", jpg: "/images/chantier-exterieur.jpg", alt: "Travaux extérieurs : branches, végétaux et évacuation", w: 1024, h: 768 })}
+            <div class="card-body"><h3>Travaux extérieurs</h3><p>Ramassage et évacuation des végétaux.</p></div>
+          </article>
+          <article class="card">
+            ${pic({ webp: "/images/chantier-arbre.webp", jpg: "/images/chantier-arbre.jpg", alt: "Jardin et arbres, remise en état des abords", w: 768, h: 952 })}
+            <div class="card-body"><h3>Jardins et abords</h3><p>Entretien des parcelles et des arbres, selon le chantier.</p></div>
+          </article>
         </div>
       </div>
     </section>
@@ -526,7 +535,7 @@ function pageShell({ file, title, desc, path, h1, lede, crumbs, faq, jsonldExtra
       </header>
       ${bodyInner}
       ${faq ? faqBlock(faq) : ""}
-      ${ctaBand("Besoin d’un avis sur votre chantier ?", "Décrivez le logement, l’accès et ce qui doit partir. Le devis est gratuit.")}
+      ${ctaBand("Besoin de faire de la place ?", "Que ce soit pour vendre un bien, vider une maison, nettoyer une grange, remettre un jardin en état ou simplement évacuer des encombrants, contactez Leroy du Débarras pour discuter de votre besoin.")}
       `,
     }),
   });
@@ -538,7 +547,7 @@ pageShell({
   desc: "Débarras de maisons et logements, nettoyage de locaux, travaux extérieurs, tri, récupération et évacuation à Marcillac-la-Croisille et en Corrèze.",
   path: "/services.html",
   h1: "Nos services",
-  lede: "Débarras, nettoyage et évacuation : une intervention adaptée au volume, qu’il s’agisse d’une maison entière ou de quelques encombrants.",
+  lede: "Leroy du Débarras intervient pour remettre en état vos espaces, évacuer ce qui vous encombre et vous débarrasser des déchets et objets dont vous n’avez plus besoin.",
   crumbs: [
     { href: "/", label: "Accueil" },
     { href: "/services.html", label: "Services" },
@@ -644,7 +653,7 @@ pageShell({
         <p>Les accès difficiles (escalier étroit, cour, chemin) se précisent dès le devis, car ils changent le temps de travail.</p>
         <p>Le <a href="/debarras-appartement.html">débarras d’appartement</a> suit la même logique, avec des contraintes d’immeuble. Grange, hangar, garage et cave : <a href="/caves-greniers-garages.html">page dépendances</a>. Pour une situation successorale, voir le <a href="/debarras-succession.html">débarras après succession</a>.</p>
       </div>
-      ${pic({ webp: "/images/salon.webp", jpg: "/images/salon.jpg", alt: "Pièce de maison avec mobilier avant un vide-maison", w: 1280, h: 822 })}
+      ${pic({ webp: "/images/goulotte-chantier.webp", jpg: "/images/goulotte-chantier.jpg", alt: "Goulottes de chantier sur une maison pour l’évacuation lors d’un débarras", w: 1024, h: 576 })}
     </div>
   </section>
   <section>
@@ -681,7 +690,7 @@ pageShell({
         <p>Un T2 n’a pas le cube d’une maison, mais un 4e étage sans ascenseur ou une cave en fond de bâtiment change le chantier. Indiquez l’étage, l’ascenseur, le stationnement et si une cave ou un grenier d’immeuble est à vider.</p>
         <p>Le travail reste un <a href="/debarras-maison.html">débarras</a> : meubles, électroménager, cartons, puis évacuation. Le <a href="/nettoyage-exterieur.html">nettoyage</a> concerne rarement un jardin d’appartement, sauf loggia, cave ou abords.</p>
       </div>
-      ${pic({ webp: "/images/piece.webp", jpg: "/images/piece.jpg", alt: "Pièce d’appartement prête à être vidée", w: 1280, h: 720 })}
+      ${pic({ webp: "/images/chantier-interieur.webp", jpg: "/images/chantier-interieur.jpg", alt: "Volume encombré à vider dans un logement", w: 768, h: 1024 })}
     </div>
   </section>`,
 });
@@ -721,7 +730,7 @@ pageShell({
         <p>Aucun tarif n’est affiché ici : le volume et l’état du logement varient trop. Le devis suit la visite des lieux ou un échange détaillé, photos à l’appui.</p>
         <p>Les maisons de Corrèze ont souvent cave et grenier : voir aussi <a href="/caves-greniers-garages.html">caves, greniers et garages</a>.</p>
       </div>
-      ${pic({ webp: "/images/maison-2.webp", jpg: "/images/maison-2.jpg", alt: "Maison individuelle, contexte d’un logement à vider après succession", w: 1280, h: 853 })}
+      ${pic({ webp: "/images/chantier-exterieur.webp", jpg: "/images/chantier-exterieur.jpg", alt: "Chantier autour d’une maison, évacuation des végétaux", w: 1024, h: 768 })}
     </div>
   </section>`,
 });
@@ -751,13 +760,13 @@ pageShell({
       <p>Une grange ou un hangar se traite comme un volume à part : objets lourds, ferraille, bois, restes de matériel agricole. Le <a href="/tri-et-recuperation.html">tri</a> (ferraille, inox, cuivre) et l’<a href="/evacuation.html">évacuation</a> font souvent l’essentiel du chantier. Un <a href="/nettoyage-fin-chantier.html">nettoyage de grange</a> peut suivre.</p>
       <h2>Cave</h2>
       <p>Humidité, faible hauteur, escalier raide, objets oubliés : une cave se vide rarement « en cinq minutes ». Signalez la largeur des marches, la présence d’électricité et le type de sol. L’évacuation se fait souvent par seaux, cartons ou charges fractionnées.</p>
-      ${pic({ webp: "/images/cave.webp", jpg: "/images/cave.jpg", alt: "Espace intérieur bas illustrant une cave à débarrasser", w: 1280, h: 873 })}
+      ${pic({ webp: "/images/chantier-interieur.webp", jpg: "/images/chantier-interieur.jpg", alt: "Cave ou dépendance encombrée à débarrasser", w: 768, h: 1024 })}
       <h2>Grenier</h2>
       <p>Poussière, isolation, trappe étroite, cartons anciens : le grenier demande de la prudence pour ne pas détériorer le logement en descendant les charges. Un <a href="/debarras-maison.html">débarras de maison</a> inclut souvent cet étage.</p>
-      ${pic({ webp: "/images/chaises.webp", jpg: "/images/chaises.jpg", alt: "Mobilier entreposé, situation typique d’un grenier encombré", w: 1280, h: 853 })}
+      ${pic({ webp: "/images/chantier-interieur.webp", jpg: "/images/chantier-interieur.jpg", alt: "Objets entreposés dans une dépendance", w: 768, h: 1024 })}
       <h2>Garage</h2>
       <p>Outils, pneus, bois, vélos, restes de bricolage : le garage concentre le lourd et le volumineux. Une dépendance isolée se traite parfois avec du <a href="/nettoyage-exterieur.html">nettoyage de terrain</a> autour.</p>
-      ${pic({ webp: "/images/portail.webp", jpg: "/images/portail.jpg", alt: "Accès à une propriété, garage ou dépendance à vider", w: 1280, h: 720 })}
+      ${pic({ webp: "/images/chantier-exterieur.webp", jpg: "/images/chantier-exterieur.jpg", alt: "Accès à une propriété, chantier d’évacuation", w: 1024, h: 768 })}
       <h3>Contraintes à préciser au devis</h3>
       <ul>
         <li>Accès (largeur, étage, distance au stationnement)</li>
@@ -810,12 +819,12 @@ pageShell({
           <p><strong>À renseigner avant production</strong> (ne pas inventer) : certifications éventuelles, assurances, matériel spécifique, interventions en hauteur. Tant que ces éléments ne sont pas fournis par l’entreprise, ils ne sont pas affichés comme des preuves.</p>
         </div>
       </div>
-      ${pic({ webp: "/images/jardin.webp", jpg: "/images/jardin.jpg", alt: "Travail de jardin et remise en état d’un terrain", w: 1280, h: 853 })}
+      ${pic({ webp: "/images/outils-nettoyage.webp", jpg: "/images/outils-nettoyage.jpg", alt: "Balai et pelle, nettoyage de gouttières et travaux extérieurs", w: 1024, h: 682 })}
     </div>
   </section>
   <section>
     <div class="container split">
-      ${pic({ webp: "/images/foret.webp", jpg: "/images/foret.jpg", alt: "Abords boisés typiques du secteur, à débroussailler selon le chantier", w: 1280, h: 854 })}
+      ${pic({ webp: "/images/chantier-arbre.webp", jpg: "/images/chantier-arbre.jpg", alt: "Jardin et arbres, abords à entretenir", w: 768, h: 952 })}
       <div class="prose">
         <h2>Après un vide-maison</h2>
         <p>Une maison vidée laisse parfois un jardin à l’abandon, du bois, des restes de mobilier dehors. On peut enchaîner débarras intérieur et nettoyage extérieur, pour que le bien soit présentable.</p>
@@ -831,7 +840,7 @@ pageShell({
   desc: "Nettoyage de fin de chantier, tri, chargement et évacuation des matériaux et déchets à Marcillac-la-Croisille. Devis Leroy du Débarras.",
   path: "/nettoyage-fin-chantier.html",
   h1: "Débarras après chantier",
-  lede: "Vous venez de terminer des travaux et il reste des matériaux, cartons, déchets ou encombrants ? Leroy du Débarras peut intervenir pour le nettoyage de fin de chantier, le tri, le chargement et l’évacuation.",
+  lede: "Vous venez de terminer des travaux et il reste des matériaux, cartons, déchets ou encombrants ? Leroy du Débarras peut intervenir pour effectuer le nettoyage de fin de chantier, le tri, le chargement et l’évacuation.",
   crumbs: [
     { href: "/", label: "Accueil" },
     { href: "/services.html", label: "Services" },
@@ -859,7 +868,7 @@ pageShell({
         </ul>
         <p>Le chantier intérieur (débarras) et le <a href="/tri-et-recuperation.html">tri</a> se combinent souvent avec l’<a href="/evacuation.html">évacuation</a> vers la déchetterie ou les filières adaptées.</p>
       </div>
-      ${pic({ webp: "/images/cuisine.webp", jpg: "/images/cuisine.jpg", alt: "Pièce à remettre en ordre après travaux ou débarras", w: 1280, h: 853 })}
+      ${pic({ webp: "/images/chantier-interieur.webp", jpg: "/images/chantier-interieur.jpg", alt: "Locaux encombrés à nettoyer après débarras ou chantier", w: 768, h: 1024 })}
     </div>
   </section>`,
 });
@@ -897,7 +906,7 @@ pageShell({
         </ul>
         <p>Aucun partenariat inventé : le circuit exact se précise au devis selon le chantier. Voir aussi l’<a href="/evacuation.html">évacuation</a> et le <a href="/debarras-maison.html">débarras de maisons</a>.</p>
       </div>
-      ${pic({ webp: "/images/meubles.webp", jpg: "/images/meubles.jpg", alt: "Objets et matériaux à trier avant évacuation", w: 1280, h: 768 })}
+      ${pic({ webp: "/images/encombrants.webp", jpg: "/images/encombrants.jpg", alt: "Encombrants et objets à trier et récupérer", w: 1024, h: 682 })}
     </div>
   </section>`,
 });
@@ -934,7 +943,7 @@ pageShell({
         </ul>
         <p>Utile après un <a href="/debarras-maison.html">débarras</a>, un <a href="/nettoyage-fin-chantier.html">chantier</a> ou des <a href="/nettoyage-exterieur.html">travaux extérieurs</a>.</p>
       </div>
-      ${pic({ webp: "/images/portail.webp", jpg: "/images/portail.jpg", alt: "Accès à une propriété pour chargement et évacuation", w: 1280, h: 720 })}
+      ${pic({ webp: "/images/chantier-exterieur.webp", jpg: "/images/chantier-exterieur.jpg", alt: "Chargement et évacuation des déchets verts", w: 1024, h: 768 })}
     </div>
   </section>`,
 });
@@ -1002,7 +1011,7 @@ pageShell({
         </div>
       </div>
       <p>Une commune plus éloignée n’est pas refusée par principe : <a href="/contact.html">demandez confirmation</a> en indiquant le lieu et le type de prestation. Cette page ne crée pas une fiche par village : elle décrit un secteur réel, à ajuster avec l’entreprise.</p>
-      ${pic({ webp: "/images/allee.webp", jpg: "/images/allee.jpg", alt: "Chemin arboré typique du paysage corrézien", w: 1280, h: 853 })}
+      ${pic({ webp: "/images/chantier-arbre.webp", jpg: "/images/chantier-arbre.jpg", alt: "Abords et jardin dans le secteur de Marcillac-la-Croisille", w: 768, h: 952 })}
     </div>
   </section>`,
 });
@@ -1036,20 +1045,12 @@ pageShell({
         <div class="placeholder-box">
           <p><strong>À compléter encore</strong></p>
           <ul>
-            <li>Photo réelle de l’équipe ou du dirigeant : à ajouter dans /images/</li>
             <li>Assurances : <span data-site="INSURANCE">À renseigner</span></li>
             <li>Certifications : <span data-site="CERTIFICATIONS">À renseigner</span></li>
           </ul>
         </div>
       </div>
-      ${pic({ webp: "/images/maison-ext.webp", jpg: "/images/maison-ext.jpg", alt: "Maison dans un cadre rural, illustration de l’ancrage local", w: 1280, h: 853 })}
-    </div>
-  </section>
-  <section>
-    <div class="container">
-      <h2 class="section-title">Preuves à venir</h2>
-      <p class="section-intro">Avis clients, photos de réalisations, partenaires : des emplacements existent, sans contenu fabriqué.</p>
-      <div class="placeholder-box"><p>Aucun avis, aucune note, aucun nombre de chantiers n’est publié tant qu’ils ne sont pas réels.</p></div>
+      ${pic({ webp: "/images/chantier-exterieur.webp", jpg: "/images/chantier-exterieur.jpg", alt: "Chantier Leroy du Débarras autour d’une maison", w: 1024, h: 768 })}
     </div>
   </section>`,
 });
@@ -1136,11 +1137,6 @@ const contactForm = `
     <textarea id="description" name="description" required></textarea>
     <p class="field-error" id="err-desc" role="status"></p>
   </div>
-  <div>
-    <label for="photos">Photos (facultatif)</label>
-    <input id="photos" name="photos" type="file" accept="image/*" multiple>
-    <p class="section-intro">Les fichiers restent sur votre appareil tant qu’aucun serveur de formulaire n’est connecté. Ils pourront être joints automatiquement plus tard.</p>
-  </div>
   <button class="btn btn-primary" type="submit">Demander mon devis</button>
   <p class="form-status" id="form-status" hidden role="status" aria-live="polite"></p>
 </form>`;
@@ -1226,7 +1222,7 @@ legalPage({
   inner: `
   <p>Cette page décrit le traitement prévu des données du formulaire de devis. Elle sera finalisée lorsque le responsable de traitement, l’hébergeur et l’outil d’envoi seront connus.</p>
   <h2>Données collectées via le formulaire</h2>
-  <p>Lorsque le formulaire sera connecté : nom, téléphone, e-mail, commune, type de prestation, type de logement, description, volume, accès, et éventuellement des photos. Un champ anti-spam non visible peut être traité sans être lu comme une donnée métier.</p>
+  <p>Lorsque le formulaire sera connecté : nom, téléphone, e-mail, commune, type de prestation, type de logement, description, volume et accès. Un champ anti-spam non visible peut être traité sans être lu comme une donnée métier.</p>
   <h2>Finalité</h2>
   <p>Répondre à une demande de devis et recontacter la personne. Pas de revente de fichiers, pas de newsletter cachée.</p>
   <h2>Base légale</h2>
