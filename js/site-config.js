@@ -37,7 +37,20 @@
     GEO_LAT: null,
     GEO_LNG: null,
     HOURS: null,
-    SAME_AS: [],
+    SAME_AS: [
+      "https://www.facebook.com/p/Leroy-Du-D%C3%A9barras-61588277545987/",
+      "https://workwave.fr/artisan/cory-leroy-00016",
+    ],
+    SOCIAL_LINKS: [
+      {
+        label: "Facebook",
+        href: "https://www.facebook.com/p/Leroy-Du-D%C3%A9barras-61588277545987/",
+      },
+      {
+        label: "WorkWave",
+        href: "https://workwave.fr/artisan/cory-leroy-00016",
+      },
+    ],
     SOCIAL_IMAGE: "/images/og-social.jpg"
   };
 

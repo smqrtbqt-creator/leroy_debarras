@@ -6,6 +6,7 @@ import fs from "fs";
 import path from "path";
 import vm from "vm";
 import { fileURLToPath } from "url";
+import { registerCorrezePages } from "./correze-pages.mjs";
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const configSrc = fs.readFileSync(path.join(root, "js", "site-config.js"), "utf8");
@@ -46,6 +47,7 @@ function pic({ webp, jpg, alt = "", w, h, className, lazy = true, fetchpriority 
 const navItems = [
   ["/", "Accueil", "index.html"],
   ["/services.html", "Services", "services.html"],
+  ["/debarras-correze.html", "Corrèze", "debarras-correze.html"],
   ["/zones-intervention.html", "Zones", "zones-intervention.html"],
   ["/a-propos.html", "À propos", "a-propos.html"],
 ];
@@ -144,6 +146,31 @@ function ctaBand(title, text) {
   </section>`;
 }
 
+function socialLinks(options = {}) {
+  const links = Array.isArray(site.SOCIAL_LINKS) ? site.SOCIAL_LINKS.filter((l) => l && l.href && l.label) : [];
+  if (!links.length) return "";
+  const title = options.title || "Réseaux et annuaires";
+  const intro = options.intro
+    ? `<p class="section-intro">${esc(options.intro)}</p>`
+    : "";
+  const items = links
+    .map(
+      (l) =>
+        `<li><a href="${esc(l.href)}" rel="noopener noreferrer" target="_blank">${esc(l.label)}</a></li>`,
+    )
+    .join("");
+  if (options.variant === "footer") {
+    return `<p class="social-label">${esc(title)}</p><ul class="social-links">${items}</ul>`;
+  }
+  return `<section class="social-band" aria-labelledby="social-title">
+    <div class="container">
+      <h2 id="social-title" class="section-title">${esc(title)}</h2>
+      ${intro}
+      <ul class="social-links social-links-lg">${items}</ul>
+    </div>
+  </section>`;
+}
+
 function footer() {
   return `<footer class="site-footer">
     <div class="container footer-grid">
@@ -153,6 +180,7 @@ function footer() {
         <p data-require="PHONE"><a data-phone-link="label" href="/contact.html">Téléphone</a></p>
         <p data-require="EMAIL"><a data-email-link="label" href="/contact.html">E-mail</a></p>
         <p data-require="ADDRESS"><span data-site="ADDRESS"></span> <span data-site="POSTAL_CODE" data-empty=""></span> <span data-site="CITY"></span></p>
+        ${socialLinks({ variant: "footer", title: "En ligne" })}
       </div>
       <div>
         <h2>Prestations</h2>
@@ -169,6 +197,7 @@ function footer() {
         <h2>Informations</h2>
         <ul>
           <li><a href="/services.html">Toutes les prestations</a></li>
+          <li><a href="/debarras-correze.html">Débarras en Corrèze</a></li>
           <li><a href="/zones-intervention.html">Zones d’intervention</a></li>
           <li><a href="/a-propos.html">À propos</a></li>
           <li><a href="/contact.html">Contact et devis</a></li>
@@ -269,6 +298,8 @@ if (site.OWNER_NAME) {
 }
 if (Array.isArray(site.SAME_AS) && site.SAME_AS.length) {
   businessNode.sameAs = site.SAME_AS.filter(Boolean);
+} else if (Array.isArray(site.SOCIAL_LINKS) && site.SOCIAL_LINKS.length) {
+  businessNode.sameAs = site.SOCIAL_LINKS.map((l) => l && l.href).filter(Boolean);
 }
 if (site.PHONE) {
   const digits = String(site.PHONE).replace(/[^\d]/g, "");
@@ -513,6 +544,10 @@ pages.push({
         </div>
       </div>
     </section>
+    ${socialLinks({
+      title: "Retrouvez-nous en ligne",
+      intro: "Page Facebook et fiche artisan WorkWave de Leroy du Débarras.",
+    })}
     ${faqBlock(faqHome)}
     ${ctaBand("Besoin de faire de la place ?", "Vendre un bien, vider une maison, nettoyer une grange, remettre un jardin en état ou évacuer des encombrants : contactez Leroy du Débarras pour discuter de votre besoin.")}
     `,
@@ -524,13 +559,40 @@ function pageShell({ file, title, desc, path, h1, lede, crumbs, faq, jsonldExtra
   const jsonld = [businessNode, breadcrumbJson(items)];
   if (jsonldExtra) jsonld.push(...(Array.isArray(jsonldExtra) ? jsonldExtra : [jsonldExtra]));
   // FAQ HTML reste visible via faqBlock ; pas de FAQPage JSON-LD (rich results FAQ retirés).
+  const isCorreze =
+    path === "/debarras-correze.html" ||
+    path === "/zones-intervention.html" ||
+    /^\/debarras-(?!maison|appartement|succession)/.test(path);
+  const currentNav = [
+    "/services.html",
+    "/zones-intervention.html",
+    "/debarras-correze.html",
+    "/a-propos.html",
+    "/contact.html",
+  ].includes(path)
+    ? path
+    : isCorreze
+      ? "/debarras-correze.html"
+      : path === "/services.html" ||
+          [
+            "/debarras-maison.html",
+            "/debarras-appartement.html",
+            "/debarras-succession.html",
+            "/caves-greniers-garages.html",
+            "/nettoyage-exterieur.html",
+            "/nettoyage-fin-chantier.html",
+            "/tri-et-recuperation.html",
+            "/evacuation.html",
+          ].includes(path)
+        ? "/services.html"
+        : "/services.html";
   pages.push({
     file,
     html: layout({
       title,
       desc,
       path,
-      current: path === "/services.html" || path === "/zones-intervention.html" || path === "/a-propos.html" || path === "/contact.html" ? path : "/services.html",
+      current: currentNav,
       extraHead,
       jsonld,
       body: `
