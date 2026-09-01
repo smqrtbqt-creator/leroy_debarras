@@ -45,10 +45,12 @@
       {
         label: "Facebook",
         href: "https://www.facebook.com/p/Leroy-Du-D%C3%A9barras-61588277545987/",
+        ariaLabel: "Leroy du Débarras sur Facebook",
       },
       {
-        label: "WorkWave",
+        label: "Workwave",
         href: "https://workwave.fr/artisan/cory-leroy-00016",
+        ariaLabel: "Leroy du Débarras sur Workwave",
       },
     ],
     SOCIAL_IMAGE: "/images/og-social.jpg"

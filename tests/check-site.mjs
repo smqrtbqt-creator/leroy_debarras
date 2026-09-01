@@ -134,6 +134,57 @@ for (const file of htmlFiles) {
 
 ok(`${htmlFiles.length} pages HTML`);
 ok(`${titles.size} titles uniques`);
+
+const FACEBOOK_URL = "https://www.facebook.com/p/Leroy-Du-D%C3%A9barras-61588277545987/";
+const WORKWAVE_URL = "https://workwave.fr/artisan/cory-leroy-00016";
+
+function withoutScripts(html) {
+  return html.replace(/<script[\s\S]*?<\/script>/gi, "");
+}
+
+function hasSocialAnchor(body, url, label) {
+  const re = new RegExp(
+    `<a\\b[^>]*href="${url.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"[^>]*>\\s*${label}\\s*</a>`,
+    "i",
+  );
+  return re.test(body);
+}
+
+if (jsonldMatch) {
+  try {
+    const data = JSON.parse(jsonldMatch[1]);
+    const biz = data["@graph"]?.find((n) => {
+      const t = n["@type"];
+      return t === "LocalBusiness" || (Array.isArray(t) && t.includes("LocalBusiness"));
+    });
+    const sameAs = Array.isArray(biz?.sameAs) ? biz.sameAs : [];
+    if (!sameAs.includes(FACEBOOK_URL)) fail("sameAs Facebook manquant dans JSON-LD");
+    else ok("sameAs Facebook JSON-LD");
+    if (!sameAs.includes(WORKWAVE_URL)) fail("sameAs Workwave manquant dans JSON-LD");
+    else ok("sameAs Workwave JSON-LD");
+  } catch {
+    fail("sameAs JSON-LD illisible");
+  }
+}
+
+for (const file of htmlFiles) {
+  const body = withoutScripts(fs.readFileSync(path.join(root, file), "utf8"));
+  if (!body.includes(`href="${FACEBOOK_URL}"`)) fail(`${file} : lien Facebook absent du HTML`);
+  if (!body.includes(`href="${WORKWAVE_URL}"`)) fail(`${file} : lien Workwave absent du HTML`);
+  if (!hasSocialAnchor(body, FACEBOOK_URL, "Facebook")) fail(`${file} : balise <a> Facebook invalide`);
+  if (!hasSocialAnchor(body, WORKWAVE_URL, "Workwave")) fail(`${file} : balise <a> Workwave invalide`);
+  if (!body.includes('aria-label="Leroy du Débarras sur Facebook"')) {
+    fail(`${file} : aria-label Facebook manquant`);
+  }
+  if (!body.includes('aria-label="Leroy du Débarras sur Workwave"')) {
+    fail(`${file} : aria-label Workwave manquant`);
+  }
+  if (!body.includes('target="_blank"') || !body.includes('rel="noopener noreferrer"')) {
+    fail(`${file} : attributs lien externe manquants`);
+  }
+}
+if (fails === 0) ok("liens sociaux HTML footer (Facebook + Workwave)");
+
 if (fails) {
   console.error(fails, "échec(s)");
   process.exit(1);

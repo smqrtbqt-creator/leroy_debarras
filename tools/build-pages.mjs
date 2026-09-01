@@ -186,10 +186,10 @@ function socialLinks(options = {}) {
     ? `<p class="section-intro">${esc(options.intro)}</p>`
     : "";
   const items = links
-    .map(
-      (l) =>
-        `<li><a href="${esc(l.href)}" rel="noopener noreferrer" target="_blank">${esc(l.label)}</a></li>`,
-    )
+    .map((l) => {
+      const aria = l.ariaLabel ? ` aria-label="${esc(l.ariaLabel)}"` : "";
+      return `<li><a href="${esc(l.href)}" target="_blank" rel="noopener noreferrer"${aria}>${esc(l.label)}</a></li>`;
+    })
     .join("");
   if (options.variant === "footer") {
     return `<p class="social-label">${esc(title)}</p><ul class="social-links">${items}</ul>`;
