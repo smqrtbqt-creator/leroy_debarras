@@ -531,6 +531,18 @@ section {
   font-size: 0.92rem;
 }
 
+.before-after-img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.subsection-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  margin: 0 0 14px;
+}
+
 .split {
   display: grid;
   gap: 28px;

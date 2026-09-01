@@ -44,6 +44,38 @@ function pic({ webp, jpg, alt = "", w, h, className, lazy = true, fetchpriority 
 </picture>`;
 }
 
+function beforeAfter({ before, after }) {
+  return `<div class="before-after">
+  <figure>
+    ${pic({ ...before, className: "before-after-img" })}
+    <figcaption><strong>Avant</strong> — ${esc(before.caption || before.alt)}</figcaption>
+  </figure>
+  <figure>
+    ${pic({ ...after, className: "before-after-img" })}
+    <figcaption><strong>Après</strong> — ${esc(after.caption || after.alt)}</figcaption>
+  </figure>
+</div>`;
+}
+
+const jardinAvantApres = {
+  before: {
+    webp: "/images/jardin-avant.webp",
+    jpg: "/images/jardin-avant.jpg",
+    alt: "Massif envahi par les mauvaises herbes et les hautes graminées",
+    caption: "massif envahi par les mauvaises herbes",
+    w: 1024,
+    h: 768,
+  },
+  after: {
+    webp: "/images/jardin-apres.webp",
+    jpg: "/images/jardin-apres.jpg",
+    alt: "Massif dégagé, paillage et bordure en pierres",
+    caption: "massif dégagé, paillage et bordure en pierres",
+    w: 1024,
+    h: 768,
+  },
+};
+
 const navItems = [
   ["/", "Accueil", "index.html"],
   ["/services.html", "Services", "services.html"],
@@ -538,6 +570,8 @@ pages.push({
       <div class="container">
         <h2 class="section-title">Chantiers réalisés</h2>
         <p class="section-intro">Photos de chantiers Leroy du Débarras, autour de Marcillac-la-Croisille.</p>
+        <h3 class="subsection-title">Avant / après — massif et abords</h3>
+        ${beforeAfter(jardinAvantApres)}
         <div class="cards cards-3">
           <article class="card">
             ${pic({ webp: "/images/chantier-interieur.webp", jpg: "/images/chantier-interieur.jpg", alt: "Dépendance encombrée : débarras et nettoyage", w: 768, h: 1024 })}
@@ -902,6 +936,13 @@ pageShell({
         </div>
       </div>
       ${pic({ webp: "/images/outils-nettoyage.webp", jpg: "/images/outils-nettoyage.jpg", alt: "Balai et pelle, nettoyage de gouttières et travaux extérieurs", w: 1024, h: 682 })}
+    </div>
+  </section>
+  <section>
+    <div class="container">
+      <h2 class="section-title">Avant / après</h2>
+      <p class="section-intro">Débroussaillage et remise en état d’un massif : enlèvement des mauvaises herbes, paillage et finition des abords.</p>
+      ${beforeAfter(jardinAvantApres)}
     </div>
   </section>
   <section>
