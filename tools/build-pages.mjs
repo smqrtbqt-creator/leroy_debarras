@@ -320,7 +320,7 @@ if (site.ADDRESS || site.POSTAL_CODE || site.CITY) {
   };
 }
 
-function serviceNode(name, url, desc) {
+function serviceNode(name, url, desc, areaName) {
   const pageUrl = abs(url);
   return {
     "@type": "Service",
@@ -328,9 +328,18 @@ function serviceNode(name, url, desc) {
     name,
     url: pageUrl,
     provider: { "@id": abs("/#business") },
-    areaServed: { "@type": "City", name: "Marcillac-la-Croisille" },
+    areaServed: areaName
+      ? [
+          { "@type": "City", name: areaName },
+          { "@type": "AdministrativeArea", name: "Corrèze" },
+        ]
+      : { "@type": "AdministrativeArea", name: "Corrèze" },
     description: desc,
   };
+}
+
+function correzeLinksNote() {
+  return `<p>Interventions dans tout le département de la Corrèze : <a href="/debarras-correze.html">débarras en Corrèze</a>, <a href="/debarras-brive-la-gaillarde.html">Brive-la-Gaillarde</a>, <a href="/debarras-tulle.html">Tulle</a>, <a href="/debarras-ussel.html">Ussel</a> et <a href="/debarras-egletons.html">Égletons</a>.</p>`;
 }
 
 const faqHome = [
@@ -477,6 +486,7 @@ pages.push({
           <li>quelques encombrants seulement.</li>
         </ul>
         <p>Chaque intervention est adaptée au volume à évacuer et à l’état des lieux.</p>
+        <p>Dans tout le département&nbsp;: <a href="/debarras-correze.html">débarras en Corrèze</a> (Brive, Tulle, Ussel et communes rurales).</p>
       </div>
     </section>
     <section>
@@ -680,7 +690,7 @@ pageShell({
         <li>Évacuation de ferraille et matériaux</li>
       </ul>
       <p><a href="/evacuation.html">Évacuation</a></p>
-      <p>Pour savoir si votre commune est dans le secteur, consultez les <a href="/zones-intervention.html">zones d’intervention</a>.</p>
+      <p>Pour le département entier : <a href="/debarras-correze.html">débarras en Corrèze</a>. Pour le secteur opérationnel autour de la base : <a href="/zones-intervention.html">zones d’intervention</a>.</p>
     </div>
   </section>`,
 });
@@ -731,6 +741,7 @@ pageShell({
       <h2>Tri, évacuation et nettoyage</h2>
       <p>Le tri permet de séparer ce qui peut encore servir de ce qui doit être évacué. L’évacuation sort les volumes du logement. Un nettoyage après débarras peut être ajouté pour faciliter une visite, une vente ou une remise en location.</p>
       <p>Les <a href="/caves-greniers-garages.html">caves, greniers et garages</a> sont souvent les pièces les plus longues : poussière, objets lourds, passage réduit.</p>
+      ${correzeLinksNote()}
     </div>
   </section>`,
 });
@@ -759,6 +770,7 @@ pageShell({
         <h2>Volumes plus petits, accès parfois plus longs</h2>
         <p>Un T2 n’a pas le cube d’une maison, mais un 4e étage sans ascenseur ou une cave en fond de bâtiment change le chantier. Indiquez l’étage, l’ascenseur, le stationnement et si une cave ou un grenier d’immeuble est à vider.</p>
         <p>Le travail reste un <a href="/debarras-maison.html">débarras</a> : meubles, électroménager, cartons, puis évacuation. Le <a href="/nettoyage-exterieur.html">nettoyage</a> concerne rarement un jardin d’appartement, sauf loggia, cave ou abords.</p>
+        ${correzeLinksNote()}
       </div>
       ${pic({ webp: "/images/chantier-interieur.webp", jpg: "/images/chantier-interieur.jpg", alt: "Volume encombré à vider dans un logement", w: 768, h: 1024 })}
     </div>
@@ -898,7 +910,7 @@ pageShell({
       <div class="prose">
         <h2>Après un vide-maison</h2>
         <p>Une maison vidée laisse parfois un jardin à l’abandon, du bois, des restes de mobilier dehors. On peut enchaîner débarras intérieur et nettoyage extérieur, pour que le bien soit présentable.</p>
-        <p>Les communes concernées sont listées sur la page <a href="/zones-intervention.html">zones d’intervention</a>.</p>
+        <p>Les communes concernées sont listées sur les pages <a href="/debarras-correze.html">débarras en Corrèze</a> et <a href="/zones-intervention.html">zones d’intervention</a>.</p>
       </div>
     </div>
   </section>`,
@@ -1024,7 +1036,7 @@ pageShell({
   desc: "Débarras et nettoyage autour de Marcillac-la-Croisille : secteurs d’Égletons, de Tulle et d’Argentat-sur-Dordogne. Demandez confirmation pour une commune plus loin.",
   path: "/zones-intervention.html",
   h1: "Zones d’intervention",
-  lede: "La zone principale est Marcillac-la-Croisille. Les déplacements vers les communes alentours se discutent selon le chantier — cette liste est modifiable.",
+  lede: "La zone principale est Marcillac-la-Croisille. Pour une vue d’ensemble du département (277 communes), voir la page <a href=\"/debarras-correze.html\">débarras en Corrèze</a>. Les déplacements vers les communes alentours se discutent selon le chantier.",
   crumbs: [
     { href: "/", label: "Accueil" },
     { href: "/zones-intervention.html", label: "Zones d’intervention" },
@@ -1080,7 +1092,7 @@ pageShell({
           <span>Saint-Martin-la-Méanne</span>
         </div>
       </div>
-      <p>Une commune plus éloignée n’est pas refusée par principe : <a href="/contact.html">demandez confirmation</a> en indiquant le lieu et le type de prestation. Cette page ne crée pas une fiche par village : elle décrit un secteur réel, à ajuster avec l’entreprise.</p>
+      <p>Une commune plus éloignée n’est pas refusée par principe : <a href="/contact.html">demandez confirmation</a> en indiquant le lieu et le type de prestation. Voir aussi <a href="/debarras-correze.html">toutes les communes de Corrèze</a> regroupées par secteur.</p>
       ${pic({ webp: "/images/chantier-arbre.webp", jpg: "/images/chantier-arbre.jpg", alt: "Abords et jardin dans le secteur de Marcillac-la-Croisille", w: 768, h: 952 })}
     </div>
   </section>`,
@@ -1330,6 +1342,8 @@ pages.push({
   }),
 });
 
+const correzeMeta = registerCorrezePages({ pageShell, pic, serviceNode, esc });
+
 for (const p of pages) {
   fs.writeFileSync(path.join(root, p.file), p.html.replace(/\n{3,}/g, "\n\n"));
   console.log("wrote", p.file);
@@ -1338,6 +1352,8 @@ for (const p of pages) {
 const indexable = [
   ["/", "index.html"],
   ["/services.html", "services.html"],
+  ["/debarras-correze.html", "debarras-correze.html"],
+  ...correzeMeta.cityFiles.map((f) => [`/${f}`, f]),
   ["/debarras-maison.html", "debarras-maison.html"],
   ["/debarras-appartement.html", "debarras-appartement.html"],
   ["/debarras-succession.html", "debarras-succession.html"],
@@ -1371,5 +1387,6 @@ Sitemap: ${abs("/sitemap.xml")}
 `;
 fs.writeFileSync(path.join(root, "robots.txt"), robots);
 
-console.log("sitemap + robots");
+console.log("sitemap + robots", indexable.length, "urls");
+console.log("correze:", correzeMeta.communeCount, "communes,", correzeMeta.cityCount, "city pages");
 console.log("SITE_URL =", BASE);

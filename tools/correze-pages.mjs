@@ -255,6 +255,7 @@ export function registerCorrezePages({ pageShell, pic, serviceNode, esc }) {
         city.h1,
         `/${city.file}`,
         city.desc,
+        commune.name,
       ),
       bodyInner: `
   <section>
