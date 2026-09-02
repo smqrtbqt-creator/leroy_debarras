@@ -17,3 +17,20 @@ export function socialTextLink(link, esc) {
   const aria = link.ariaLabel ? ` aria-label="${esc(link.ariaLabel)}"` : "";
   return `<a href="${esc(link.href)}" target="_blank" rel="noopener noreferrer"${aria}>${esc(link.label)}</a>`;
 }
+
+/** Colonne footer type Agence IA Web — liens texte détectables par les crawlers SEO. */
+export function footerSocialCol(links, esc) {
+  const items = links
+    .map(
+      (link) => `          <li>
+            ${socialTextLink(link, esc)}
+          </li>`,
+    )
+    .join("\n");
+  return `      <div>
+        <h2>Réseaux sociaux</h2>
+        <ul class="footer-social">
+${items}
+        </ul>
+      </div>`;
+}

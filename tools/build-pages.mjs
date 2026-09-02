@@ -7,7 +7,7 @@ import path from "path";
 import vm from "vm";
 import { fileURLToPath } from "url";
 import { registerCorrezePages } from "./correze-pages.mjs";
-import { socialButton } from "./social-fragments.mjs";
+import { socialButton, footerSocialCol } from "./social-fragments.mjs";
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const configSrc = fs.readFileSync(path.join(root, "js", "site-config.js"), "utf8");
@@ -233,6 +233,9 @@ function socialLinks(options = {}) {
 }
 
 function footer() {
+  const links = Array.isArray(site.SOCIAL_LINKS)
+    ? site.SOCIAL_LINKS.filter((l) => l && l.href && l.label && l.id)
+    : [];
   return `<footer class="site-footer">
     <div class="container footer-grid">
       <div>
@@ -241,7 +244,6 @@ function footer() {
         <p data-require="PHONE"><a data-phone-link="label" href="/contact.html">Téléphone</a></p>
         <p data-require="EMAIL"><a data-email-link="label" href="/contact.html">E-mail</a></p>
         <p data-require="ADDRESS"><span data-site="ADDRESS"></span> <span data-site="POSTAL_CODE" data-empty=""></span> <span data-site="CITY"></span></p>
-        ${socialLinks({ variant: "footer", title: "En ligne" })}
       </div>
       <div>
         <h2>Prestations</h2>
@@ -266,6 +268,7 @@ function footer() {
           <li><a href="/politique-confidentialite.html">Confidentialité</a></li>
         </ul>
       </div>
+      ${footerSocialCol(links, esc)}
     </div>
     <div class="container legal">
       <p>© <span id="year"></span> Leroy du Débarras — Marcillac-la-Croisille, Corrèze.</p>
@@ -583,9 +586,9 @@ pages.push({
     </section>
     ${socialLinks({
       id: "reseaux",
-      title: "Suivez Leroy du Débarras sur Facebook",
+      title: "Retrouvez-nous sur nos réseaux",
       intro:
-        "Retrouvez nos actualités, photos de chantiers et demandez un devis en message sur notre page Facebook officielle.",
+        "Page Facebook officielle de Leroy du Débarras : actualités, photos de chantiers et demande de devis en message.",
     })}
     <section>
       <div class="container prose">

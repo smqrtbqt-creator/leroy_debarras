@@ -146,7 +146,7 @@ for (const file of htmlFiles) {
 ok(`${htmlFiles.length} pages HTML`);
 ok(`${titles.size} titles uniques`);
 
-const FACEBOOK_URL = "https://www.facebook.com/p/Leroy-Du-D%C3%A9barras-61588277545987/";
+const FACEBOOK_URL = "https://www.facebook.com/61588277545987";
 const WORKWAVE_URL = "https://workwave.fr/artisan/cory-leroy-00016";
 
 function withoutScripts(html) {
@@ -181,6 +181,7 @@ for (const file of htmlFiles) {
   const body = withoutScripts(fs.readFileSync(path.join(root, file), "utf8"));
   if (!body.includes(`href="${FACEBOOK_URL}"`)) fail(`${file} : lien Facebook absent du HTML`);
   if (!body.includes(`href="${WORKWAVE_URL}"`)) fail(`${file} : lien Workwave absent du HTML`);
+  if (!body.includes('class="footer-social"')) fail(`${file} : liste footer-social absente`);
   if (!hasSocialAnchor(body, FACEBOOK_URL, "Facebook")) fail(`${file} : balise <a> Facebook invalide`);
   if (!hasSocialAnchor(body, WORKWAVE_URL, "Workwave")) fail(`${file} : balise <a> Workwave invalide`);
   if (!body.includes('aria-label="Leroy du Débarras sur Facebook"')) {
@@ -200,7 +201,8 @@ if (!indexBody.includes('id="reseaux"')) fail("accueil : section #reseaux absent
 else ok("section réseaux accueil (#reseaux)");
 if (!indexBody.includes("social-btn--facebook")) fail("accueil : bouton Facebook brandé absent");
 else ok("bouton Facebook brandé accueil");
-if (!indexBody.includes(`href="${FACEBOOK_URL}"`)) fail("accueil : href Facebook absent");
+if (!indexBody.includes('class="footer-social"')) fail("accueil : liste footer-social absente");
+else ok("liste footer-social accueil");
 
 if (fails) {
   console.error(fails, "échec(s)");

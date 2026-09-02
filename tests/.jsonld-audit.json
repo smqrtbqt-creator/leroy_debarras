@@ -1,0 +1,360 @@
+{
+  "at": "2026-09-02T13:28:32.120Z",
+  "inventory": [
+    {
+      "rel": "404.html",
+      "blocks": 0,
+      "micro": false
+    },
+    {
+      "rel": "a-propos.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "caves-greniers-garages.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "contact.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "debarras-appartement.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "debarras-argentat-sur-dordogne.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "debarras-bort-les-orgues.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "debarras-brive-la-gaillarde.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "debarras-correze.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "debarras-cosnac.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "debarras-egletons.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "debarras-maison.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "debarras-malemort.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "debarras-marcillac-la-croisille.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "debarras-meymac.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "debarras-objat.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "debarras-saint-pantaleon-de-larche.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "debarras-succession.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "debarras-tulle.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "debarras-ussel.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "debarras-uzerche.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "evacuation.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "index.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "mentions-legales.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "nettoyage-exterieur.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "nettoyage-fin-chantier.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "politique-confidentialite.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "services.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "tri-et-recuperation.html",
+      "blocks": 1,
+      "micro": false
+    },
+    {
+      "rel": "zones-intervention.html",
+      "blocks": 1,
+      "micro": false
+    }
+  ],
+  "issues": [
+    {
+      "page": "a-propos.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "caves-greniers-garages.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "contact.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "debarras-appartement.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "debarras-argentat-sur-dordogne.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "debarras-bort-les-orgues.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "debarras-brive-la-gaillarde.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "debarras-correze.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "debarras-cosnac.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "debarras-egletons.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "debarras-maison.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "debarras-malemort.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "debarras-marcillac-la-croisille.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "debarras-meymac.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "debarras-objat.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "debarras-saint-pantaleon-de-larche.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "debarras-succession.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "debarras-tulle.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "debarras-ussel.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "debarras-uzerche.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "evacuation.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "index.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "mentions-legales.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "nettoyage-exterieur.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "nettoyage-fin-chantier.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "politique-confidentialite.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "services.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "tri-et-recuperation.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    },
+    {
+      "page": "zones-intervention.html",
+      "type": "LocalBusiness",
+      "prop": "openingHours",
+      "severity": "avertissement",
+      "msg": "horaires recommandés"
+    }
+  ]
+}

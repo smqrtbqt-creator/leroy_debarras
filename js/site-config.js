@@ -41,14 +41,14 @@
     PRICE_RANGE: "Sur devis",
     HOURS: null,
     SAME_AS: [
-      "https://www.facebook.com/p/Leroy-Du-D%C3%A9barras-61588277545987/",
+      "https://www.facebook.com/61588277545987",
       "https://workwave.fr/artisan/cory-leroy-00016",
     ],
     SOCIAL_LINKS: [
       {
         id: "facebook",
         label: "Facebook",
-        href: "https://www.facebook.com/p/Leroy-Du-D%C3%A9barras-61588277545987/",
+        href: "https://www.facebook.com/61588277545987",
         ariaLabel: "Leroy du Débarras sur Facebook",
       },
       {
