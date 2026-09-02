@@ -122,8 +122,8 @@ function breadcrumbs(items) {
   return `<nav class="breadcrumbs" aria-label="Fil d’Ariane"><ol>${li}</ol></nav>`;
 }
 
-function breadcrumbJson(items) {
-  return {
+function breadcrumbJson(items, pageUrl) {
+  const node = {
     "@type": "BreadcrumbList",
     itemListElement: items.map((it, i) => ({
       "@type": "ListItem",
@@ -131,6 +131,34 @@ function breadcrumbJson(items) {
       name: it.label,
       item: abs(it.href === "/" ? "/" : it.href),
     })),
+  };
+  if (pageUrl) node["@id"] = `${pageUrl}#breadcrumb`;
+  return node;
+}
+
+function webPageNode({ url, name, description, breadcrumbId }) {
+  const node = {
+    "@type": "WebPage",
+    "@id": `${url}#webpage`,
+    url,
+    name,
+    description,
+    isPartOf: { "@id": abs("/#website") },
+    about: { "@id": abs("/#business") },
+    inLanguage: "fr-FR",
+  };
+  if (breadcrumbId) node.breadcrumb = { "@id": breadcrumbId };
+  return node;
+}
+
+function imageObject(url, width = 1200, height = 630) {
+  return {
+    "@type": "ImageObject",
+    "@id": `${url}#image`,
+    url,
+    contentUrl: url,
+    width,
+    height,
   };
 }
 
@@ -308,6 +336,9 @@ function layout({ title, desc, path, current, noindex, jsonld, extraHead, body }
 `;
 }
 
+const ogImageUrl = abs(site.SOCIAL_IMAGE || "/images/og-social.jpg");
+const ogImage = imageObject(ogImageUrl, 1200, 630);
+
 const businessNode = {
   "@type": ["LocalBusiness", "HomeAndConstructionBusiness"],
   "@id": abs("/#business"),
@@ -315,8 +346,15 @@ const businessNode = {
   url: abs("/"),
   description:
     "Débarras, nettoyage et évacuation à Marcillac-la-Croisille : maisons, granges, garages, tri et enlèvement des déchets.",
-  image: abs("/images/og-social.jpg"),
-  logo: abs("/images/og-social.jpg"),
+  image: ogImage,
+  logo: {
+    "@type": "ImageObject",
+    "@id": abs("/#logo"),
+    url: ogImageUrl,
+    contentUrl: ogImageUrl,
+    width: 1200,
+    height: 630,
+  },
   areaServed: [
     { "@type": "City", name: "Marcillac-la-Croisille" },
     { "@type": "AdministrativeArea", name: "Corrèze" },
@@ -341,6 +379,16 @@ if (site.PHONE) {
       ? "+" + digits
       : digits;
 }
+if (site.PRICE_RANGE) {
+  businessNode.priceRange = String(site.PRICE_RANGE).trim();
+}
+if (site.GEO_LAT && site.GEO_LNG) {
+  businessNode.geo = {
+    "@type": "GeoCoordinates",
+    latitude: Number(site.GEO_LAT),
+    longitude: Number(site.GEO_LNG),
+  };
+}
 if (site.ADDRESS || site.POSTAL_CODE || site.CITY) {
   businessNode.address = {
     "@type": "PostalAddress",
@@ -351,6 +399,32 @@ if (site.ADDRESS || site.POSTAL_CODE || site.CITY) {
     addressCountry: "FR",
   };
 }
+if (businessNode.telephone || site.EMAIL) {
+  businessNode.contactPoint = {
+    "@type": "ContactPoint",
+    contactType: "customer service",
+    availableLanguage: ["French", "fr"],
+    areaServed: "FR",
+    ...(businessNode.telephone ? { telephone: businessNode.telephone } : {}),
+    ...(site.EMAIL ? { email: site.EMAIL } : {}),
+  };
+}
+if (Array.isArray(site.HOURS) && site.HOURS.length) {
+  businessNode.openingHoursSpecification = site.HOURS;
+} else if (typeof site.HOURS === "string" && site.HOURS.trim()) {
+  businessNode.openingHours = site.HOURS.trim();
+}
+
+const websiteNode = {
+  "@type": "WebSite",
+  "@id": abs("/#website"),
+  url: abs("/"),
+  name: "Leroy du Débarras",
+  description:
+    "Site de Leroy du Débarras : débarras, nettoyage et évacuation à Marcillac-la-Croisille et en Corrèze.",
+  publisher: { "@id": abs("/#business") },
+  inLanguage: "fr-FR",
+};
 
 function serviceNode(name, url, desc, areaName) {
   const pageUrl = abs(url);
@@ -358,6 +432,7 @@ function serviceNode(name, url, desc, areaName) {
     "@type": "Service",
     "@id": `${pageUrl}#service`,
     name,
+    serviceType: name,
     url: pageUrl,
     provider: { "@id": abs("/#business") },
     areaServed: areaName
@@ -471,14 +546,14 @@ pages.push({
     extraHead: `<link rel="preload" as="image" href="/images/hero.webp" type="image/webp">`,
     jsonld: [
       businessNode,
-      {
-        "@type": "WebSite",
-        "@id": abs("/#website"),
+      websiteNode,
+      webPageNode({
         url: abs("/"),
-        name: "Leroy du Débarras",
-        publisher: { "@id": abs("/#business") },
-        inLanguage: "fr-FR",
-      },
+        name: "Débarras, Nettoyage & Évacuation | Leroy du Débarras",
+        description:
+          "Débarras de maisons, granges et garages : nettoyage, évacuation des déchets et enlèvement de végétaux.",
+      }),
+      faqJson(faqHome, { id: abs("/#faq"), url: abs("/") }),
     ],
     body: `
     <section class="hero">
@@ -600,9 +675,24 @@ pages.push({
 
 function pageShell({ file, title, desc, path, h1, lede, crumbs, faq, jsonldExtra, bodyInner, extraHead }) {
   const items = crumbs;
-  const jsonld = [businessNode, breadcrumbJson(items)];
+  const pageUrl = path === "/" ? `${BASE}/` : abs(path);
+  const breadcrumb = breadcrumbJson(items, pageUrl);
+  const jsonld = [
+    businessNode,
+    websiteNode,
+    breadcrumb,
+    webPageNode({
+      url: pageUrl,
+      name: title,
+      description: desc,
+      breadcrumbId: breadcrumb["@id"],
+    }),
+  ];
+  if (faq && faq.length) {
+    jsonld.push(faqJson(faq, { id: `${pageUrl}#faq`, url: pageUrl }));
+  }
   if (jsonldExtra) jsonld.push(...(Array.isArray(jsonldExtra) ? jsonldExtra : [jsonldExtra]));
-  // FAQ HTML reste visible via faqBlock ; pas de FAQPage JSON-LD (rich results FAQ retirés).
+  // FAQ HTML visible + FAQPage JSON-LD aligné (éligibilité rich results selon politiques Google).
   const isCorreze =
     path === "/debarras-correze.html" ||
     path === "/zones-intervention.html" ||
@@ -1293,6 +1383,12 @@ pageShell({
 });
 
 function legalPage({ file, title, desc, path, h1, inner }) {
+  const pageUrl = abs(path);
+  const crumbs = [
+    { href: "/", label: "Accueil" },
+    { href: path, label: h1 },
+  ];
+  const breadcrumb = breadcrumbJson(crumbs, pageUrl);
   pages.push({
     file,
     html: layout({
@@ -1301,11 +1397,21 @@ function legalPage({ file, title, desc, path, h1, inner }) {
       path,
       current: "/",
       noindex: true,
-      jsonld: [businessNode, breadcrumbJson([{ href: "/", label: "Accueil" }, { href: path, label: h1 }])],
+      jsonld: [
+        businessNode,
+        websiteNode,
+        breadcrumb,
+        webPageNode({
+          url: pageUrl,
+          name: title,
+          description: desc,
+          breadcrumbId: breadcrumb["@id"],
+        }),
+      ],
       body: `
       <header class="page-hero">
         <div class="container">
-          ${breadcrumbs([{ href: "/", label: "Accueil" }, { href: path, label: h1 }])}
+          ${breadcrumbs(crumbs)}
           <h1>${esc(h1)}</h1>
         </div>
       </header>

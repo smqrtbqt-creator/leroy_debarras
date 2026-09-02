@@ -34,8 +34,11 @@
     EXPERIENCE: "5 ans",
     INSURANCE: null,
     CERTIFICATIONS: null,
-    GEO_LAT: null,
-    GEO_LNG: null,
+    /** Centroïde officiel commune Marcillac-la-Croisille (geo.api.gouv.fr / INSEE 19125) — pas le GPS exact du lieu-dit. */
+    GEO_LAT: "45.2504",
+    GEO_LNG: "2.0305",
+    /** Affiché aussi dans le contenu : tarifs sur devis, pas de grille fixe. */
+    PRICE_RANGE: "Sur devis",
     HOURS: null,
     SAME_AS: [
       "https://www.facebook.com/p/Leroy-Du-D%C3%A9barras-61588277545987/",

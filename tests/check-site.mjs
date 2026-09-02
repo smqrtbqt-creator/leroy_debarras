@@ -102,13 +102,14 @@ if (jsonldMatch) {
     if (!data["@graph"]?.length) fail("JSON-LD accueil sans @graph");
     else ok("JSON-LD accueil valide");
     const raw = JSON.stringify(data);
-    if (raw.includes('"taxID"') || raw.includes('"vatID"') || raw.includes('"FAQPage"')) {
-      fail("JSON-LD accueil : taxID/vatID/FAQPage non attendus");
+    if (raw.includes('"taxID"') || raw.includes('"vatID"')) {
+      fail("JSON-LD accueil : taxID/vatID non attendus (SIRET FR)");
     }
     const types = data["@graph"].flatMap((n) => (Array.isArray(n["@type"]) ? n["@type"] : [n["@type"]]));
-    if (!types.includes("LocalBusiness") || !types.includes("WebSite")) {
-      fail("JSON-LD accueil : types manquants");
+    if (!types.includes("LocalBusiness") || !types.includes("WebSite") || !types.includes("WebPage")) {
+      fail("JSON-LD accueil : types manquants (LocalBusiness/WebSite/WebPage)");
     }
+    if (!types.includes("FAQPage")) fail("JSON-LD accueil : FAQPage manquant");
     const biz = data["@graph"].find((n) => {
       const t = n["@type"];
       return t === "LocalBusiness" || (Array.isArray(t) && t.includes("LocalBusiness"));
@@ -116,6 +117,12 @@ if (jsonldMatch) {
     if (!biz?.description || !biz?.image || !biz?.telephone || !biz?.address) {
       fail("JSON-LD LocalBusiness incomplet");
     }
+    if (!biz?.priceRange) fail("JSON-LD LocalBusiness sans priceRange");
+    if (!biz?.geo?.latitude || !biz?.geo?.longitude) fail("JSON-LD LocalBusiness sans geo");
+    if (typeof biz?.logo !== "object" || !biz.logo.url) fail("JSON-LD logo doit être ImageObject");
+    if (typeof biz?.image === "string") fail("JSON-LD image doit être ImageObject");
+    else if (biz?.image && !biz.image.url) fail("JSON-LD image.url manquant");
+    ok("JSON-LD LocalBusiness Google-ready (image/logo/geo/priceRange)");
   } catch {
     fail("JSON-LD accueil invalide");
   }
