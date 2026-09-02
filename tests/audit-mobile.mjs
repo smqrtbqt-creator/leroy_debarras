@@ -77,6 +77,10 @@ if (tightGaps.length) {
 if (!/--tap-min:/.test(css) || !/--tap-gap:/.test(css)) {
   fail("CSS: variables --tap-min / --tap-gap manquantes");
 }
+if (!/overflow-wrap:\s*anywhere/i.test(css)) fail("CSS: overflow-wrap manquant");
+if (!/\.communes-text[\s\S]*overflow-wrap:\s*anywhere/i.test(css)) {
+  fail("CSS: .communes-text sans overflow-wrap");
+}
 
 ok(`viewport OK sur ${htmlFiles.length} pages`);
 ok(`tailles police scannées: ${fontSizes.length}`);

@@ -9,7 +9,7 @@ import { CORREZE_COMMUNES, CORREZE_SECTORS } from "../data/correze-data.mjs";
 import { CORREZE_CITY_PAGES } from "../data/correze-cities.mjs";
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
-const BASE = "https://leroydudebaras.fr";
+const BASE = "https://leroydudebarras.fr";
 let fails = 0;
 
 function fail(msg) {

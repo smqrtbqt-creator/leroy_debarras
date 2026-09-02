@@ -7,11 +7,11 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
-const CANON_BASE = "https://leroydudebaras.fr";
+const CANON_BASE = "https://leroydudebarras.fr";
 const INDEX_TITLE = "Débarras, Nettoyage & Évacuation | Leroy Débarras";
 const INDEX_DESC =
   "Débarras de maisons, granges et garages : nettoyage, évacuation des déchets et enlèvement de végétaux.";
-const OLD_DOMAIN = /leroy-debarras\.fr|www\.leroydudebaras/i;
+const OLD_DOMAIN = /leroy-debarras\.fr|leroydudebaras\.fr|www\.leroydudebaras/i;
 
 const htmlFiles = fs.readdirSync(root).filter((f) => f.endsWith(".html"));
 const report = {
@@ -116,7 +116,7 @@ console.log("\nPages title lengths:", report.pages.map((p) => `${p.file}:${p.tit
 
 // Live checks (optional, requires network)
 try {
-  const res = await fetch("https://leroydudebaras.fr/");
+  const res = await fetch("https://leroydudebarras.fr/");
   const liveHtml = await res.text();
   const liveTitle = (liveHtml.match(/<title>([^<]*)<\/title>/) || [])[1];
   const liveCanon = (liveHtml.match(/rel="canonical" href="([^"]+)"/) || [])[1];
@@ -125,9 +125,9 @@ try {
   console.log("LIVE title:", decode(liveTitle), `(${decode(liveTitle).length} car.)`);
   console.log("LIVE desc len:", liveDesc?.length);
   console.log("LIVE canonical:", liveCanon);
-  const sm = await fetch("https://leroydudebaras.fr/sitemap.xml");
+  const sm = await fetch("https://leroydudebarras.fr/sitemap.xml");
   console.log("LIVE sitemap status:", sm.status);
-  const rb = await fetch("https://leroydudebaras.fr/robots.txt");
+  const rb = await fetch("https://leroydudebarras.fr/robots.txt");
   console.log("LIVE robots status:", rb.status);
 } catch (e) {
   console.log("\nLIVE checks skipped:", e.message);

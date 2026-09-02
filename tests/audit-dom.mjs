@@ -83,8 +83,8 @@ const rows = [];
 
 console.log("=== A. ACCESSIBILITÉ MÉTRIQUE (live) ===\n");
 try {
-  const home = await fetchUrl("https://leroydudebaras.fr/");
-  const hub = await fetchUrl("https://leroydudebaras.fr/debarras-correze.html");
+  const home = await fetchUrl("https://leroydudebarras.fr/");
+  const hub = await fetchUrl("https://leroydudebarras.fr/debarras-correze.html");
   console.log(`Accueil: HTTP ${home.status}, ${home.ms}ms, ${home.bytes} octets`);
   console.log(`Hub Corrèze: HTTP ${hub.status}, ${hub.ms}ms, ${hub.bytes} octets`);
   if (home.status !== 200) issues.push(`Accueil HTTP ${home.status}`);

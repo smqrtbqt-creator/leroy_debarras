@@ -1,12 +1,12 @@
 import fs from "fs";
 
 const urls = [
-  "https://leroydudebaras.fr/",
-  "https://www.leroydudebaras.fr/",
-  "http://leroydudebaras.fr/",
-  "https://leroydudebaras.fr/services.html",
-  "https://leroydudebaras.fr/index.html",
-  "https://leroydudebaras.fr/contact.html",
+  "https://leroydudebarras.fr/",
+  "https://www.leroydudebarras.fr/",
+  "http://leroydudebarras.fr/",
+  "https://leroydudebarras.fr/services.html",
+  "https://leroydudebarras.fr/index.html",
+  "https://leroydudebarras.fr/contact.html",
 ];
 
 async function check(u) {
@@ -36,9 +36,9 @@ async function check(u) {
 
 for (const u of urls) await check(u);
 
-const sm = await fetch("https://leroydudebaras.fr/sitemap.xml").then((r) => r.text());
+const sm = await fetch("https://leroydudebarras.fr/sitemap.xml").then((r) => r.text());
 const locs = [...sm.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
 console.log("sitemap count", locs.length);
-console.log("sitemap apex?", locs.every((l) => l.startsWith("https://leroydudebaras.fr")));
+console.log("sitemap apex?", locs.every((l) => l.startsWith("https://leroydudebarras.fr")));
 console.log("sitemap www?", locs.some((l) => l.includes("www.")));
 console.log("sitemap index.html?", locs.some((l) => l.endsWith("/index.html")));

@@ -1,5 +1,5 @@
 import fs from "fs";
-const r = await fetch("https://leroydudebaras.fr/missing-page-xyz");
+const r = await fetch("https://leroydudebarras.fr/missing-page-xyz");
 const t = await r.text();
 console.log("status", r.status);
 console.log("title", (t.match(/<title>([^<]+)/) || [])[1]);

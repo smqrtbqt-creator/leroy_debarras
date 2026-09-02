@@ -7,6 +7,7 @@ import path from "path";
 import vm from "vm";
 import { fileURLToPath } from "url";
 import { registerCorrezePages } from "./correze-pages.mjs";
+import { socialButton } from "./social-fragments.mjs";
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const configSrc = fs.readFileSync(path.join(root, "js", "site-config.js"), "utf8");
@@ -207,26 +208,26 @@ function ctaBand(title, text) {
 }
 
 function socialLinks(options = {}) {
-  const links = Array.isArray(site.SOCIAL_LINKS) ? site.SOCIAL_LINKS.filter((l) => l && l.href && l.label) : [];
+  const links = Array.isArray(site.SOCIAL_LINKS)
+    ? site.SOCIAL_LINKS.filter((l) => l && l.href && l.label && l.id)
+    : [];
   if (!links.length) return "";
   const title = options.title || "Réseaux et annuaires";
   const intro = options.intro
     ? `<p class="section-intro">${esc(options.intro)}</p>`
     : "";
-  const items = links
-    .map((l) => {
-      const aria = l.ariaLabel ? ` aria-label="${esc(l.ariaLabel)}"` : "";
-      return `<li><a href="${esc(l.href)}" target="_blank" rel="noopener noreferrer"${aria}>${esc(l.label)}</a></li>`;
-    })
-    .join("");
+  const buttons = links.map((l) => socialButton(l, esc)).join("\n        ");
+  const sectionId = options.id ? ` id="${esc(options.id)}"` : "";
+
   if (options.variant === "footer") {
-    return `<p class="social-label">${esc(title)}</p><ul class="social-links">${items}</ul>`;
+    return `<p class="social-label">${esc(title)}</p><div class="social-buttons social-buttons--footer">${buttons}</div>`;
   }
-  return `<section class="social-band" aria-labelledby="social-title">
+
+  return `<section class="social-band"${sectionId} aria-labelledby="social-title">
     <div class="container">
       <h2 id="social-title" class="section-title">${esc(title)}</h2>
       ${intro}
-      <ul class="social-links social-links-lg">${items}</ul>
+      <div class="social-buttons">${buttons}</div>
     </div>
   </section>`;
 }
@@ -580,6 +581,12 @@ pages.push({
         </div>
       </div>
     </section>
+    ${socialLinks({
+      id: "reseaux",
+      title: "Suivez Leroy du Débarras sur Facebook",
+      intro:
+        "Retrouvez nos actualités, photos de chantiers et demandez un devis en message sur notre page Facebook officielle.",
+    })}
     <section>
       <div class="container prose">
         <h2 class="section-title">Une intervention adaptée à votre besoin</h2>
@@ -666,10 +673,6 @@ pages.push({
         </div>
       </div>
     </section>
-    ${socialLinks({
-      title: "Retrouvez-nous en ligne",
-      intro: "Page Facebook et fiche artisan WorkWave de Leroy du Débarras.",
-    })}
     ${faqBlock(faqHome)}
     ${ctaBand("Besoin de faire de la place ?", "Vendre un bien, vider une maison, nettoyer une grange, remettre un jardin en état ou évacuer des encombrants : contactez Leroy du Débarras pour discuter de votre besoin.")}
     `,

@@ -79,7 +79,7 @@ const indexCanon = (index.match(/rel="canonical" href="([^"]+)"/) || [])[1];
 const expectedTitle = "Débarras, Nettoyage &amp; Évacuation | Leroy du Débarras";
 const expectedDesc =
   "Débarras de maisons, granges et garages : nettoyage, évacuation des déchets et enlèvement de végétaux.";
-const expectedCanon = "https://leroydudebaras.fr/";
+const expectedCanon = "https://leroydudebarras.fr/";
 
 if (indexTitle !== expectedTitle) fail(`title accueil : "${indexTitle}"`);
 else ok("title accueil");
@@ -154,10 +154,9 @@ function withoutScripts(html) {
 }
 
 function hasSocialAnchor(body, url, label) {
-  const re = new RegExp(
-    `<a\\b[^>]*href="${url.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"[^>]*>\\s*${label}\\s*</a>`,
-    "i",
-  );
+  const escUrl = url.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const escLabel = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const re = new RegExp(`<a\\b[^>]*href="${escUrl}"[^>]*>[\\s\\S]*?${escLabel}[\\s\\S]*?</a>`, "i");
   return re.test(body);
 }
 
@@ -194,7 +193,14 @@ for (const file of htmlFiles) {
     fail(`${file} : attributs lien externe manquants`);
   }
 }
-if (fails === 0) ok("liens sociaux HTML footer (Facebook + Workwave)");
+if (fails === 0) ok("liens sociaux HTML (Facebook + Workwave)");
+
+const indexBody = withoutScripts(fs.readFileSync(path.join(root, "index.html"), "utf8"));
+if (!indexBody.includes('id="reseaux"')) fail("accueil : section #reseaux absente");
+else ok("section réseaux accueil (#reseaux)");
+if (!indexBody.includes("social-btn--facebook")) fail("accueil : bouton Facebook brandé absent");
+else ok("bouton Facebook brandé accueil");
+if (!indexBody.includes(`href="${FACEBOOK_URL}"`)) fail("accueil : href Facebook absent");
 
 if (fails) {
   console.error(fails, "échec(s)");

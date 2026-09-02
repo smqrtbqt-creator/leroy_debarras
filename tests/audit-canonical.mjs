@@ -7,7 +7,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const BASE = "https://leroydudebaras.fr";
+const BASE = "https://leroydudebarras.fr";
 const issues = [];
 
 function walk(dir, acc = []) {

@@ -1,16 +1,20 @@
-# Domaine canonique : https://leroydudebaras.fr (apex, sans www)
+# Domaine canonique : https://leroydudebarras.fr (apex, sans www)
 # Nécessaire pour corriger l’alerte Semrush « canonical » (www accessible en 200).
 
 <IfModule mod_rewrite.c>
 RewriteEngine On
 
+# Ancien domaine typo 1 R (apex ou www) → canonique 2 R
+RewriteCond %{HTTP_HOST} ^(www\.)?leroydudebaras\.fr$ [NC]
+RewriteRule ^ https://leroydudebarras.fr%{REQUEST_URI} [R=301,L]
+
+# www canonique 2 R → apex
+RewriteCond %{HTTP_HOST} ^www\.leroydudebarras\.fr$ [NC]
+RewriteRule ^ https://leroydudebarras.fr%{REQUEST_URI} [R=301,L]
+
 # HTTP → HTTPS (apex)
 RewriteCond %{HTTPS} !=on
-RewriteRule ^ https://leroydudebaras.fr%{REQUEST_URI} [R=301,L]
-
-# www → apex
-RewriteCond %{HTTP_HOST} ^www\.leroydudebaras\.fr$ [NC]
-RewriteRule ^ https://leroydudebaras.fr%{REQUEST_URI} [R=301,L]
+RewriteRule ^ https://leroydudebarras.fr%{REQUEST_URI} [R=301,L]
 
 # /index.html → /
 RewriteRule ^index\.html$ / [R=301,L]

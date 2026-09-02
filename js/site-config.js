@@ -13,7 +13,7 @@
   "use strict";
 
   var SITE = {
-    SITE_URL: "https://leroydudebaras.fr",
+    SITE_URL: "https://leroydudebarras.fr",
     SITE_NAME: "Leroy du Débarras",
     BUSINESS_NAME: "Leroy du Débarras",
     CITY: "Marcillac-la-Croisille",
@@ -46,11 +46,13 @@
     ],
     SOCIAL_LINKS: [
       {
+        id: "facebook",
         label: "Facebook",
         href: "https://www.facebook.com/p/Leroy-Du-D%C3%A9barras-61588277545987/",
         ariaLabel: "Leroy du Débarras sur Facebook",
       },
       {
+        id: "workwave",
         label: "Workwave",
         href: "https://workwave.fr/artisan/cory-leroy-00016",
         ariaLabel: "Leroy du Débarras sur Workwave",
