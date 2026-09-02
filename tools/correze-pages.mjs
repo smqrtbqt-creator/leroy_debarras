@@ -113,20 +113,26 @@ export function registerCorrezePages({ pageShell, pic, serviceNode, esc }) {
   function sectorBlocks() {
     return CORREZE_SECTORS.map((sector) => {
       const list = communesBySector(sector.id);
-      const pills = list
-        .map((c) => {
-          const page = cityBySlug[c.slug];
-          if (page) {
-            return `<a class="commune-pill" href="/${page.file}">${esc(c.name)}</a>`;
-          }
-          return `<span>${esc(c.name)}</span>`;
-        })
-        .join("");
-      return `<div class="zones-block">
+      const linked = [];
+      const plain = [];
+      for (const c of list) {
+        const page = cityBySlug[c.slug];
+        if (page) {
+          linked.push(`<a class="commune-pill" href="/${page.file}">${esc(c.name)}</a>`);
+        } else {
+          plain.push(esc(c.name));
+        }
+      }
+      // Liens = pills ; autres communes = 1 seul paragraphe (réduit fortement le DOM)
+      const pills = linked.length ? `<div class="communes">${linked.join("")}</div>` : "";
+      const text = plain.length
+        ? `<p class="communes-text">${plain.join(", ")}</p>`
+        : "";
+      return `<article class="zones-block">
         <h3 class="section-title" style="font-size:1.25rem">${esc(sector.name)}</h3>
         <p>${esc(sector.blurb)}</p>
-        <div class="communes">${pills}</div>
-      </div>`;
+        ${pills}${text}
+      </article>`;
     }).join("");
   }
 
@@ -216,7 +222,10 @@ export function registerCorrezePages({ pageShell, pic, serviceNode, esc }) {
       <p class="section-intro">${CORREZE_COMMUNES.length} communes du département 19, regroupées par secteurs. Une commune sans page dédiée reste éligible au devis.</p>
       <div class="correze-map" role="img" aria-label="Corrèze : secteurs Brive, Tulle, Ussel, Uzerche, Égletons, Dordogne, Sud et plateau">
         <div class="correze-map-grid">
-          ${CORREZE_SECTORS.map((s) => `<div class="correze-map-cell" data-sector="${esc(s.id)}"><strong>${esc(s.name)}</strong><span>${communesBySector(s.id).length} communes</span></div>`).join("")}
+          ${CORREZE_SECTORS.map(
+            (s) =>
+              `<div class="correze-map-cell" data-sector="${esc(s.id)}"><strong>${esc(s.name)}</strong> · ${communesBySector(s.id).length} communes</div>`,
+          ).join("")}
         </div>
       </div>
       ${sectorBlocks()}

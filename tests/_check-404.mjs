@@ -1,0 +1,11 @@
+import fs from "fs";
+const r = await fetch("https://leroydudebaras.fr/missing-page-xyz");
+const t = await r.text();
+console.log("status", r.status);
+console.log("title", (t.match(/<title>([^<]+)/) || [])[1]);
+const rob = t.match(/name=["']robots["'][^>]*content=["']([^"']+)/i);
+console.log("robots", rob ? rob[1] : null);
+const can = t.match(/rel=["']canonical["'][^>]*href=["']([^"']+)/i);
+console.log("canonical", can ? can[1] : null);
+console.log("introuvable", /introuvable/i.test(t));
+console.log("is homepage?", /Débarras, nettoyage et évacuation à Marcillac/i.test(t));

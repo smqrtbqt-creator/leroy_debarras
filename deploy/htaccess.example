@@ -1,0 +1,17 @@
+# Apache / mutualisé — domaine canonique https://leroydudebaras.fr
+# Placer à la racine du site (à côté de index.html).
+
+RewriteEngine On
+
+# HTTP → HTTPS
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://leroydudebaras.fr%{REQUEST_URI} [R=301,L]
+
+# www → apex
+RewriteCond %{HTTP_HOST} ^www\.leroydudebaras\.fr$ [NC]
+RewriteRule ^ https://leroydudebaras.fr%{REQUEST_URI} [R=301,L]
+
+# /index.html → /
+RewriteRule ^index\.html$ / [R=301,L]
+
+ErrorDocument 404 /404.html

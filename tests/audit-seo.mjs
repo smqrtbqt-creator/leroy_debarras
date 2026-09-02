@@ -38,7 +38,11 @@ for (const file of htmlFiles) {
 
   if (titleCount !== 1) report.issues.push(`${file}: ${titleCount} balises title`);
   if (descCount !== 1) report.issues.push(`${file}: ${descCount} meta description`);
-  if (canonCount !== 1) report.issues.push(`${file}: ${canonCount} canonical`);
+  if (file === "404.html") {
+    if (canonCount !== 0) report.issues.push(`${file}: ne doit pas avoir de canonical`);
+  } else if (canonCount !== 1) {
+    report.issues.push(`${file}: ${canonCount} canonical`);
+  }
   if (OLD_DOMAIN.test(html)) report.issues.push(`${file}: ancien domaine détecté`);
   if (canon && !canon.startsWith(CANON_BASE)) report.issues.push(`${file}: canonical hors domaine (${canon})`);
   if (!viewport?.includes("width=device-width")) report.issues.push(`${file}: viewport manquant/incorrect`);

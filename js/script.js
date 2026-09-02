@@ -1,4 +1,5 @@
-/* Leroy du Débarras — navigation, données entreprise, formulaire */
+/* Leroy du Débarras — navigation, données entreprise, formulaire
+ * Optimisé INP : travail critique immédiat, reste en idle / yield. */
 (function () {
   "use strict";
 
@@ -14,93 +15,149 @@
     return filled(value) ? String(value).trim() : fallback;
   }
 
-  document.querySelectorAll("[data-site]").forEach(function (el) {
-    var key = el.getAttribute("data-site");
-    var fallback = el.getAttribute("data-empty") || "À renseigner";
-    el.textContent = text(site[key], fallback);
-  });
-
-  document.querySelectorAll("[data-require]").forEach(function (el) {
-    var key = el.getAttribute("data-require");
-    if (!filled(site[key])) el.hidden = true;
-  });
-
-  document.querySelectorAll("[data-phone-link]").forEach(function (el) {
-    if (filled(site.PHONE)) {
-      var digits = String(site.PHONE).replace(/[^\d+]/g, "");
-      el.setAttribute("href", "tel:" + digits);
-      el.removeAttribute("hidden");
-      el.removeAttribute("aria-hidden");
-      el.removeAttribute("tabindex");
-      var label = text(site.PHONE_DISPLAY || site.PHONE, "Appeler");
-      if (el.getAttribute("data-phone-link") === "label") {
-        el.textContent = "Appeler " + label;
-      }
+  function idle(fn, timeout) {
+    if (typeof window.requestIdleCallback === "function") {
+      window.requestIdleCallback(fn, { timeout: timeout || 2000 });
     } else {
-      el.setAttribute("hidden", "");
-      el.setAttribute("aria-hidden", "true");
-      el.setAttribute("tabindex", "-1");
+      window.setTimeout(fn, 1);
     }
-  });
+  }
 
-  document.querySelectorAll("[data-email-link]").forEach(function (el) {
-    if (filled(site.EMAIL)) {
-      el.setAttribute("href", "mailto:" + String(site.EMAIL).trim());
-      el.removeAttribute("hidden");
-      if (el.getAttribute("data-email-link") === "label") {
-        el.textContent = String(site.EMAIL).trim();
+  function yieldToMain() {
+    if (window.scheduler && typeof window.scheduler.yield === "function") {
+      return window.scheduler.yield();
+    }
+    return new Promise(function (resolve) {
+      window.setTimeout(resolve, 0);
+    });
+  }
+
+  /** Active les CSS différés (fonts) sans handler inline onload. */
+  function activateDeferredCss() {
+    var links = document.querySelectorAll('link[data-defer-css][media="print"]');
+    for (var i = 0; i < links.length; i++) {
+      links[i].media = "all";
+      links[i].removeAttribute("data-defer-css");
+    }
+  }
+
+  /** Liens téléphone / CTA sticky — prioritaire pour le premier appui. */
+  function hydratePhoneLinks() {
+    var nodes = document.querySelectorAll("[data-phone-link]");
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      if (filled(site.PHONE)) {
+        var digits = String(site.PHONE).replace(/[^\d+]/g, "");
+        el.setAttribute("href", "tel:" + digits);
+        el.removeAttribute("hidden");
+        el.removeAttribute("aria-hidden");
+        el.removeAttribute("tabindex");
+        var label = text(site.PHONE_DISPLAY || site.PHONE, "Appeler");
+        if (el.getAttribute("data-phone-link") === "label") {
+          el.textContent = "Appeler " + label;
+        }
+      } else {
+        el.setAttribute("hidden", "");
+        el.setAttribute("aria-hidden", "true");
+        el.setAttribute("tabindex", "-1");
       }
-    } else {
-      el.setAttribute("hidden", "");
     }
-  });
+  }
 
-  var toggle = document.getElementById("menu-toggle");
-  var nav = document.getElementById("site-nav");
-
-  function setOpen(open) {
+  /** Menu mobile : un seul listener (délégation) + Escape seulement si ouvert. */
+  function hydrateNav() {
+    var toggle = document.getElementById("menu-toggle");
+    var nav = document.getElementById("site-nav");
     if (!toggle || !nav) return;
-    nav.classList.toggle("open", open);
-    toggle.setAttribute("aria-expanded", open ? "true" : "false");
-    toggle.setAttribute("aria-label", open ? "Fermer le menu" : "Ouvrir le menu");
-  }
 
-  if (toggle && nav) {
-    toggle.addEventListener("click", function () {
-      setOpen(!nav.classList.contains("open"));
-    });
-    document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") setOpen(false);
-    });
-    nav.querySelectorAll("a").forEach(function (link) {
-      link.addEventListener("click", function () {
+    function setOpen(open) {
+      nav.classList.toggle("open", open);
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      toggle.setAttribute("aria-label", open ? "Fermer le menu" : "Ouvrir le menu");
+    }
+
+    function onDocKeydown(e) {
+      if (e.key === "Escape") {
         setOpen(false);
-      });
+        document.removeEventListener("keydown", onDocKeydown);
+      }
+    }
+
+    toggle.addEventListener("click", function () {
+      var open = !nav.classList.contains("open");
+      setOpen(open);
+      if (open) {
+        document.addEventListener("keydown", onDocKeydown);
+      } else {
+        document.removeEventListener("keydown", onDocKeydown);
+      }
+    });
+
+    nav.addEventListener("click", function (e) {
+      var t = e.target;
+      if (t && t.closest && t.closest("a")) setOpen(false);
     });
   }
 
-  var year = document.getElementById("year");
-  if (year) year.textContent = String(new Date().getFullYear());
-
-  var started = document.querySelector("#devis-form [name='startedAt']");
-  if (started) started.value = String(Date.now());
-
-  var form = document.getElementById("devis-form");
-  var status = document.getElementById("form-status");
-
-  function setStatus(state, message) {
-    if (!status) return;
-    status.hidden = false;
-    status.dataset.state = state;
-    status.textContent = message;
+  function hydrateDataSite() {
+    var nodes = document.querySelectorAll("[data-site]");
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      var key = el.getAttribute("data-site");
+      var fallback = el.getAttribute("data-empty") || "À renseigner";
+      el.textContent = text(site[key], fallback);
+    }
   }
 
-  function showError(id, message) {
-    var el = document.getElementById(id);
-    if (el) el.textContent = message || "";
+  function hydrateRequire() {
+    var nodes = document.querySelectorAll("[data-require]");
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      var key = el.getAttribute("data-require");
+      if (!filled(site[key])) el.hidden = true;
+    }
   }
 
-  if (form && status) {
+  function hydrateEmailLinks() {
+    var nodes = document.querySelectorAll("[data-email-link]");
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      if (filled(site.EMAIL)) {
+        el.setAttribute("href", "mailto:" + String(site.EMAIL).trim());
+        el.removeAttribute("hidden");
+        if (el.getAttribute("data-email-link") === "label") {
+          el.textContent = String(site.EMAIL).trim();
+        }
+      } else {
+        el.setAttribute("hidden", "");
+      }
+    }
+  }
+
+  function hydrateYear() {
+    var year = document.getElementById("year");
+    if (year) year.textContent = String(new Date().getFullYear());
+  }
+
+  function hydrateForm() {
+    var started = document.querySelector("#devis-form [name='startedAt']");
+    if (started) started.value = String(Date.now());
+
+    var form = document.getElementById("devis-form");
+    var status = document.getElementById("form-status");
+    if (!form || !status) return;
+
+    function setStatus(state, message) {
+      status.hidden = false;
+      status.dataset.state = state;
+      status.textContent = message;
+    }
+
+    function showError(id, message) {
+      var el = document.getElementById(id);
+      if (el) el.textContent = message || "";
+    }
+
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       ["err-name", "err-phone", "err-email", "err-commune", "err-desc"].forEach(function (id) {
@@ -177,11 +234,17 @@
         })
           .then(function (res) {
             if (!res.ok) throw new Error("http");
-            setStatus("success", "Merci. Votre demande de devis a bien été envoyée. Nous vous recontactons rapidement.");
+            setStatus(
+              "success",
+              "Merci. Votre demande de devis a bien été envoyée. Nous vous recontactons rapidement."
+            );
             form.reset();
           })
           .catch(function () {
-            setStatus("error", "L’envoi n’a pas abouti. Réessayez dans un instant ou utilisez le téléphone lorsque le numéro sera indiqué.");
+            setStatus(
+              "error",
+              "L’envoi n’a pas abouti. Réessayez dans un instant ou utilisez le téléphone lorsque le numéro sera indiqué."
+            );
           });
         return;
       }
@@ -219,4 +282,26 @@
       );
     });
   }
+
+  // —— Bootstrap INP-friendly ——
+  activateDeferredCss();
+  hydratePhoneLinks();
+  hydrateNav();
+
+  idle(function () {
+    Promise.resolve()
+      .then(function () {
+        hydrateDataSite();
+        hydrateRequire();
+        return yieldToMain();
+      })
+      .then(function () {
+        hydrateEmailLinks();
+        hydrateYear();
+        return yieldToMain();
+      })
+      .then(function () {
+        hydrateForm();
+      });
+  }, 1200);
 })();

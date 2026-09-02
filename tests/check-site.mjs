@@ -34,10 +34,14 @@ for (const file of htmlFiles) {
   const og = (html.match(/property="og:image" content="([^"]+)"/) || [])[1];
   if (!title) fail(`${file} sans title`);
   if (!h1) fail(`${file} sans H1`);
-  if (!canon) fail(`${file} sans canonical`);
+  if (file === "404.html") {
+    if (canon) fail(`${file} ne doit pas avoir de canonical`);
+  } else if (!canon) {
+    fail(`${file} sans canonical`);
+  }
   if (!desc) fail(`${file} sans description`);
   if (!og) fail(`${file} sans og:image`);
-  if (!html.includes('lang="fr"')) fail(`${file} lang`);
+  if (!html.includes('lang="fr-FR"') && !html.includes('lang="fr"')) fail(`${file} lang`);
   if (titles.has(title)) fail(`title dupliqué : ${title} (${file} / ${titles.get(title)})`);
   else titles.set(title, file);
   if (h1s.has(h1) && file !== "404.html") fail(`H1 dupliqué : ${h1}`);
@@ -91,8 +95,8 @@ if (indexTitle.replace(/&amp;/g, "&").length < 50 || indexTitle.replace(/&amp;/g
 if (indexDesc.length < 100 || indexDesc.length > 130) {
   fail(`description accueil hors plage (${indexDesc.length})`);
 }
-if (!index.includes('hreflang="fr"') || !index.includes('hreflang="x-default"')) {
-  fail("hreflang accueil manquant");
+if (!index.includes('hreflang="fr-FR"') || !index.includes('hreflang="x-default"')) {
+  fail("hreflang accueil manquant (fr-FR + x-default)");
 } else ok("hreflang accueil");
 
 const jsonldMatch = index.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);

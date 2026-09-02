@@ -276,23 +276,26 @@ function footer() {
   </div>`;
 }
 
-function layout({ title, desc, path, current, noindex, jsonld, extraHead, body }) {
+function layout({ title, desc, path, current, noindex, jsonld, extraHead, body, skipCanonical }) {
   const robots = noindex ? "noindex, follow" : "index, follow";
   const canonical = path === "/" ? `${BASE}/` : abs(path);
   const ogImage = abs(site.SOCIAL_IMAGE || "/images/og-social.jpg");
   const graph = Array.isArray(jsonld) ? jsonld : jsonld ? [jsonld] : [];
+  const canonBlock = skipCanonical
+    ? ""
+    : `  <link rel="canonical" href="${canonical}">
+  <link rel="alternate" hreflang="fr-FR" href="${canonical}">
+  <link rel="alternate" hreflang="x-default" href="${canonical}">
+`;
   return `<!DOCTYPE html>
-<html lang="fr">
+<html lang="fr-FR">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${esc(title)}</title>
   <meta name="description" content="${esc(desc)}">
   <meta name="robots" content="${robots}">
-  <link rel="canonical" href="${canonical}">
-  <link rel="alternate" hreflang="fr" href="${canonical}">
-  <link rel="alternate" hreflang="x-default" href="${canonical}">
-  <meta name="referrer" content="strict-origin-when-cross-origin">
+${canonBlock}  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="fr_FR">
   <meta property="og:site_name" content="Leroy du Débarras">
@@ -309,7 +312,7 @@ function layout({ title, desc, path, current, noindex, jsonld, extraHead, body }
   <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
   <link rel="preload" as="style" href="https://fonts.bunny.net/css?family=source-sans-3:400,600,700|literata:500,600,700&amp;display=swap">
-  <link rel="stylesheet" href="https://fonts.bunny.net/css?family=source-sans-3:400,600,700|literata:500,600,700&amp;display=swap" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="https://fonts.bunny.net/css?family=source-sans-3:400,600,700|literata:500,600,700&amp;display=swap" media="print" data-defer-css>
   <noscript><link rel="stylesheet" href="https://fonts.bunny.net/css?family=source-sans-3:400,600,700|literata:500,600,700&amp;display=swap"></noscript>
   <link rel="stylesheet" href="/css/style.min.css">
   ${extraHead || ""}
@@ -1178,50 +1181,22 @@ pageShell({
       <div class="zones-block">
         <h2 class="section-title">Marcillac-la-Croisille</h2>
         <p>Commune d’attache du site et point de départ des interventions. Les villages immédiatement voisins sont traités en priorité.</p>
-        <div class="communes">
-          <span>Marcillac-la-Croisille</span>
-          <span>Champagnac-la-Noaille</span>
-          <span>Saint-Pardoux-la-Croisille</span>
-          <span>Lafage-sur-Sombre</span>
-          <span>Clergoux</span>
-          <span>Saint-Priest-de-Gimel</span>
-          <span>Gimel-les-Cascades</span>
-        </div>
+        <p class="communes-text">Marcillac-la-Croisille, Champagnac-la-Noaille, Saint-Pardoux-la-Croisille, Lafage-sur-Sombre, Clergoux, Saint-Priest-de-Gimel, Gimel-les-Cascades</p>
       </div>
       <div class="zones-block">
         <h2 class="section-title">Secteur d’Égletons</h2>
         <p>Communes du plateau et de la haute Corrèze, à courte distance au nord-est.</p>
-        <div class="communes">
-          <span>Égletons</span>
-          <span>Rosiers-d’Égletons</span>
-          <span>Eyrein</span>
-          <span>Moustier-Ventadour</span>
-          <span>Sarran</span>
-          <span>Corrèze</span>
-          <span>Chaumeil</span>
-          <span>Saint-Yrieix-le-Déjalat</span>
-        </div>
+        <p class="communes-text">Égletons, Rosiers-d’Égletons, Eyrein, Moustier-Ventadour, Sarran, Corrèze, Chaumeil, Saint-Yrieix-le-Déjalat</p>
       </div>
       <div class="zones-block">
         <h2 class="section-title">Secteur de Tulle</h2>
         <p>Vers l’ouest : bassins de vie de Tulle et communes de la vallée de la Corrèze.</p>
-        <div class="communes">
-          <span>Tulle</span>
-          <span>Laguenne-sur-Avalouze</span>
-          <span>Sainte-Fortunade</span>
-          <span>Naves</span>
-          <span>Chameyrat</span>
-        </div>
+        <p class="communes-text">Tulle, Laguenne-sur-Avalouze, Sainte-Fortunade, Naves, Chameyrat</p>
       </div>
       <div class="zones-block">
         <h2 class="section-title">Secteur d’Argentat-sur-Dordogne</h2>
         <p>Vers le sud : Dordogne corrézienne, lorsque le déplacement reste cohérent avec le volume du chantier.</p>
-        <div class="communes">
-          <span>Argentat-sur-Dordogne</span>
-          <span>Saint-Privat</span>
-          <span>Servières-le-Château</span>
-          <span>Saint-Martin-la-Méanne</span>
-        </div>
+        <p class="communes-text">Argentat-sur-Dordogne, Saint-Privat, Servières-le-Château, Saint-Martin-la-Méanne</p>
       </div>
       <p>Une commune plus éloignée n’est pas refusée par principe : <a href="/contact.html">demandez confirmation</a> en indiquant le lieu et le type de prestation. Voir aussi <a href="/debarras-correze.html">toutes les communes de Corrèze</a> regroupées par secteur.</p>
       ${pic({ webp: "/images/chantier-arbre.webp", jpg: "/images/chantier-arbre.jpg", alt: "Abords et jardin dans le secteur de Marcillac-la-Croisille", w: 768, h: 952 })}
@@ -1474,6 +1449,7 @@ pages.push({
     path: "/404.html",
     current: "/",
     noindex: true,
+    skipCanonical: true,
     body: `
     <header class="page-hero">
       <div class="container">
